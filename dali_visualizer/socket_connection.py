@@ -39,7 +39,7 @@ class Connection(SockJSConnection):
         if len(msg) > 2:
             json_msg = json.loads(msg)
             if "channel" in json_msg:
-                print("detected channel = ", json_msg["channel"])
+                # new participant to this channel:
                 self.channel = json_msg["channel"]
         else:
             pass
@@ -52,4 +52,4 @@ class Connection(SockJSConnection):
     def pubsub_message(cls, msg):
         for client in cls.clients:
             if client.authenticated and client.channel == msg.channel:
-                client.send(msg.body)
+                client.send_message(msg.body, "data")

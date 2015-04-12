@@ -16,32 +16,33 @@ var react_task = function () {
 };
 
 var lib_js = [
+    "js/bower_components/react/react.min.js",
     "js/bower_components/zepto/zepto.min.js",
     "js/bower_components/sockjs/sockjs.min.js"
 ];
 
 gulp.task('default', function () {
-    return es.merge(
-            gulp.src(
-                lib_js.concat(
-                    [
-                        "js/components/*.js"
-                    ]
-                )
-            ),
-            es.merge(react_task())
-        )//.pipe(jshint())
-        .pipe(concat('all.js'))
-        // .pipe(order(
-        //         [
-        //         "js/bower_components/*.js",
-        //         "js/components/*.js",
-        //         "js/components/*.jsx",
-        //         "js/*.jsx",
-        //         "js/*",
-        //         "*"]))
-        .pipe(rename('app.min.js'))
-        .pipe(uglify())
-        // .pipe(gzip())
+    gulp.src(lib_js)
+        .pipe(concat('vendor.js'))
         .pipe(gulp.dest('static/js/'));
+
+    return gulp.src([
+                "js/components/*.js",
+                "js/components/*.jsx",
+                "js/*.jsx"
+            ]).pipe(
+                react({harmony: true})
+            ).pipe(order(
+                [
+                "js/bower_components/*/*.js",
+                "js/components/*.js",
+                "js/components/*.jsx",
+                "js/*.jsx",
+                "js/*",
+                "*"]))
+            .pipe(concat('app.js'))
+            .pipe(rename('app.min.js'))
+            // .pipe(uglify())
+            // .pipe(gzip())
+            .pipe(gulp.dest('static/js/'));
 });
