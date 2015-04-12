@@ -7,6 +7,7 @@
 *.exe
 *.o
 *.so
+*
 
 # Compiled protobuffs #
 *.pb.cc
@@ -28,10 +29,8 @@
 *.gem
 *.pem
 
-cpp/Eigen
-cpp/prog.o
-cpp/mygreatfolder
-cpp/examples/sentiment_models
+# Special redis file (???)
+*.rdb
 
 .ipynb_checkpoints/
 
