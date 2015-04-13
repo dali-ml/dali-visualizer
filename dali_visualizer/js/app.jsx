@@ -86,6 +86,43 @@ var QA = React.createClass({
     }
 });
 
+var FiniteDistribution = React.createClass({
+    render: function () {
+        var dist = this.props.distribution.probabilities;
+        var labels = this.props.distribution.labels;
+        var boxes = [];
+        for (var idx = 0; idx < dist.length; ++idx) {
+            boxes.push(<Metrics key={"box_" + idx}
+                                probability={dist[idx]}
+                                label={labels[idx]}
+                                width={150}
+                                height={20} />);
+        }
+        return (
+            <div className="qa card">
+                {boxes}
+            </div>
+        );
+    }
+});
+
+var ClassifierExample = React.createClass({
+    render: function () {
+        return (
+            <div className="classifier_example">
+                <div className="row">
+                    <div className="col s12 m6">
+                        {VisualizerFor(this.props.example.input)}
+                    </div>
+                    <div className="col s12 m6">
+                        {VisualizerFor(this.props.example.output)}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
 var ChannelSwitch = React.createClass({
     render: function () {
         return (
@@ -97,8 +134,12 @@ var ChannelSwitch = React.createClass({
 });
 
 var VisualizerFor = function (el) {
-    if (el.type == "qa") {
+    if (el.type == "classifier_example") {
+        return <ClassifierExample example={el} />
+    } else if (el.type == "qa") {
         return <QA qa={el} />;
+    } else if (el.type == "finite_distribution") {
+        return <FiniteDistribution distribution={el} />
     } else if (el.type == "sentence") {
         return <Sentences sentences={el} />;
     } else if (el.type == "sentence") {
@@ -145,13 +186,7 @@ var VisualizationServer = React.createClass({
         this.socket.onmessage = this.onMessage.bind(this);
     },
     onMessage: function (event) {
-        if (event.data.type == 'data' || event.data.type == "qa") {
-            this.setState({
-                messages: prepend(this.state.messages, event.data)
-            });
-        } else if (event.data.type == 'pick_channel_error') {
-            throw event.data.data.message;
-        } else if (event.data.type == 'pick_channel') {
+        if (event.data.type == 'pick_channel') {
             // what channel do you want?
             var new_messages = this.state.messages,
                 new_channel  = null;
@@ -166,7 +201,9 @@ var VisualizationServer = React.createClass({
                 messages: new_messages
             });
         } else {
-            console.log("not recognized: ", event.data);
+            this.setState({
+                messages: prepend(this.state.messages, event.data)
+            });
         }
     },
     componentDidUpdate: function (prevProps, prevState) {
@@ -194,10 +231,10 @@ var VisualizationServer = React.createClass({
         });
         return (
             <div className="dali-visualizer">
-                <nav class="top-nav">
+                <nav className="top-nav">
                     <div className="nav-wrapper">
                         <a className="brand-logo center" href="#">Dali Visualizer</a>
-                        <ul class="right hide-on-med-and-down">
+                        <ul className="right hide-on-med-and-down">
                             <DropDown onChange={this.onChangeSubscription}
                                       options={options}
                                       placeholder="Select Feed" />

@@ -63,3 +63,11 @@ nav {
 .dropdown-inner li {
     cursor: pointer;
 }
+
+rect.pos {
+    fill: blue;
+}
+
+rect.neg {
+    fill: gray;
+}

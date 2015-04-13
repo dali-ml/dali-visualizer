@@ -1,0 +1,57 @@
+.word-playground {
+        padding: 50px 10px;
+}
+
+.word {
+        display: inline-block;
+        padding: 2px 0px;
+        position: relative;
+        font-size: 18px;
+        font-family: Times, serif;
+        color: #272822;
+}
+
+table .ylabel {
+        -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+        transform-origin: left top 0;
+}
+
+table.prediction-table,
+table.prediction-table td,
+table.prediction-table tr {
+        text-align: center;
+        font-size: 14px;
+        font-family: Times, serif;
+        border: none;
+}
+
+table.prediction-table .table-label {
+        text-align: right;
+}
+
+.dotted_vertical_line {
+        position: absolute;
+        left: 50%;
+        height: 20px;
+        border-left: 1px dotted #272822;
+        margin-left: auto;
+        margin-right: auto;
+}
+
+.word.highlight {
+        display: inline-block;
+        background: #fffd38;
+        padding: 2px 2px;
+        color:#1f211d;
+        margin-right: -2px;
+        margin-left: -2px;
+}
+
+.word.memorized {
+        position: absolute;
+        display: block;
+        bottom: 40px;
+        color: gray;
+}
