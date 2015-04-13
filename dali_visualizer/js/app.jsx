@@ -53,19 +53,56 @@ var DropDown = React.createClass({
 
 var Sentence = React.createClass({
     render: function () {
-        return <p className="caption">{this.props.sentence.words.join(" ")}</p>
+        var font_style = {
+            'color': this.props.color || "black"
+        };
+        var words = this.props.sentence.words;
+        var weights = this.props.sentence.weights;
+        if (weights) {
+            weights = normalize_weights(weights);
+        }
+        var words_elt = [];
+        for (var idx = 0; idx < words.length; ++idx) {
+            var word_style = {
+                'font-size': 12 + Math.round(5 * weights[idx])
+            }
+            words_elt.push(<span style={word_style}>{words[idx]}</span>);
+            words_elt.push(<span>{" "}</span>);
+        }
+
+        return (
+            <p className="caption">
+                <font style={font_style}>
+                    {words_elt}
+                </font>
+            </p>
+        )
     }
 });
 
 var Sentences = React.createClass({
     render: function () {
-        var sentences = this.props.sentences.sentences.map( function (evidence, k) {
-            return <Sentence key={"sentence_" + k}
-                             sentence={evidence} />
-        });
+        var sentences = this.props.sentences.sentences;
+        var weights = this.props.sentences.weights;
+        var sentences_as_elt = [];
+        if (weights) {
+            weights = normalize_weights(weights);
+        }
+        for (var i=0; i < sentences.length; ++i) {
+            var color = "black";
+            if (weights) {
+                var value = 0.7 * (1.0 - weights[i]);
+                color = color_str(value, value, value);
+            }
+            sentences_as_elt.push(
+                <Sentence key={"sentence_" + i}
+                          sentence={sentences[i]}
+                          color={color} />
+            );
+        }
         return (
             <div className="sentences">
-                {sentences}
+                {sentences_as_elt}
             </div>
         );
     }
@@ -74,12 +111,17 @@ var Sentences = React.createClass({
 var QA = React.createClass({
     render: function () {
         return (
-            <div className="qa card">
+            <div className="card feed-elem">
                 <div className="context">
                     <Sentences sentences={this.props.qa.context} />
                 </div>
+                <hr className="qa-line" />
                 <div className="question-answer">
-                    <Sentence sentence={this.props.qa.question}/>A: <Sentence sentence={this.props.qa.answer}/>
+                    <b>
+                        <Sentence sentence={this.props.qa.question}/>
+                        {"A: "}
+                        <Sentence sentence={this.props.qa.answer} color="steelblue" />
+                    </b>
                 </div>
             </div>
         );
@@ -87,19 +129,37 @@ var QA = React.createClass({
 });
 
 var FiniteDistribution = React.createClass({
+    getInitialState: function() {
+        return {'attached': false};
+    },
+    componentDidMount: function() {
+        this.setState({
+            'attached': true
+        });
+    },
     render: function () {
         var dist = this.props.distribution.probabilities;
         var labels = this.props.distribution.labels;
         var boxes = [];
         for (var idx = 0; idx < dist.length; ++idx) {
-            boxes.push(<Metrics key={"box_" + idx}
-                                probability={dist[idx]}
-                                label={labels[idx]}
-                                width={150}
-                                height={20} />);
+            var percent = Math.round(100*dist[idx]);
+            liquid_width = "0%";
+            if (this.state.attached) {
+                liquid_width = '' + percent + '%'
+            }
+            var liquid_style = {'width': liquid_width };
+            var label = labels[idx] + ": " + percent + '%';
+            boxes.push(
+                <div className="tank">
+                    <div className="liquid" style={liquid_style} />
+                    <div className="label">
+                        {label}
+                    </div>
+                </div>
+            )
         }
         return (
-            <div className="qa card">
+            <div className="card feed-elem">
                 {boxes}
             </div>
         );
@@ -109,7 +169,7 @@ var FiniteDistribution = React.createClass({
 var ClassifierExample = React.createClass({
     render: function () {
         return (
-            <div className="classifier_example">
+            <div className="classifier_example table">
                 <div className="row">
                     <div className="col s12 m6">
                         {VisualizerFor(this.props.example.input)}

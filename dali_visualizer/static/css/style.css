@@ -11,9 +11,6 @@ body {
     padding-top: 20px;
 }
 
-.qa {
-    padding:15px;
-}
 
 .question-answer p {
     display: inline-block;
@@ -70,4 +67,13 @@ rect.pos {
 
 rect.neg {
     fill: gray;
+}
+
+.row.container-height {
+    overflow: hidden;
+}
+
+.row.container-height > [class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
 }
