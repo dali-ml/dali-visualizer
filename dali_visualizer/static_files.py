@@ -9,12 +9,14 @@ server_dir  = os.path.abspath(os.path.dirname(__file__))
 index_route = os.path.join(server_dir, 'static/html/index.html')
 
 class IndexHandler(RequestHandler):
+
     def get(self):
         self.render(index_route)
 
 routes = [
             (r"/", IndexHandler),
             (r"/css/(.*)", StaticFileHandler, {'path': os.path.join(server_dir, 'static/css/')}),
+            (r"/materialize/(.*)", StaticFileHandler, {'path': os.path.join(server_dir, 'static/materialize/')}),
             (r"/js/(.*)", StaticFileHandler,  {'path': os.path.join(server_dir, 'static/js/')})
         ]
 

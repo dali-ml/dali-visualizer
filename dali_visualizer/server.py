@@ -55,6 +55,7 @@ class RedisVisualizer(object):
         @exit_gracefully    bool : capture SIGINT event & shut down server from ioloop (default=True)
 
         """
+        self.exit_gracefully = exit_gracefully
         if subscriptions is None:
             subscriptions = ["namespace_*", "feed_*"]
         # 2. Start a connection pool to redis:
@@ -62,14 +63,22 @@ class RedisVisualizer(object):
         self.clients = tornadoredis.Client(connection_pool=pool, password="")
         self.clients.connect()
         # 3. listen to events on feed_*, namespace_*
-        self.clients.psubscribe( subscriptions, lambda msg: self.clients.listen(Connection.pubsub_message))
+        try:
+            self.clients.psubscribe( subscriptions, lambda msg: self.clients.listen(Connection.pubsub_message))
+        except tornadoredis.exceptions.ConnectionError:
+            print("""
+                Could not connect to Redis. Start server with:
+                    > redis-server
+                """)
+            signal_handler(None, None)
+            try_exit()
         if not websockets:
             Router = SockJSRouter(Connection, socket_path, dict(disabled_transports=['websocket']))
         else:
             Router = SockJSRouter(Connection, socket_path)
         # 4. Creater router for http + sockets:
         self.App = tornado.web.Application(StaticRoutes + Router.urls)
-        self.exit_gracefully = exit_gracefully
+
 
     def start(self, port):
         """

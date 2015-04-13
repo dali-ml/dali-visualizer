@@ -1,3 +1,65 @@
 body {
     background: #fff;
 }
+
+.context p {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.feed.container {
+    padding-top: 20px;
+}
+
+.qa {
+    padding:15px;
+}
+
+.question-answer p {
+    display: inline-block;
+}
+.question-answer p:nth-of-type(1) {
+    margin-right: 10px;
+}
+.question-answer p:nth-of-type(2) {
+    color: #1976D2;
+}
+
+nav ul li {
+    position:  relative;
+}
+nav {
+    overflow: visible;
+}
+
+.dropdown-inner {
+    background: #fff;
+    top: 0px;
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    display: none;
+}
+
+.dropdown-inner.active {
+    display: block;
+    opacity: 1;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.dropdown-inner li {
+    float:  left;
+    clear: both;
+    position: relative;
+    padding: 0px;
+    width: 100%;
+}
+.dropdown-inner li, .dropdown-inner li a {
+    color: black;
+    color: rgba(0, 0, 0, 0.870588);
+}
+.dropdown-inner li {
+    cursor: pointer;
+}

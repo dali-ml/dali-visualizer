@@ -16,7 +16,7 @@ var react_task = function () {
 };
 
 var lib_js = [
-    "js/bower_components/react/react.min.js",
+    "js/bower_components/react/react.js",
     "js/bower_components/zepto/zepto.min.js",
     "js/bower_components/sockjs/sockjs.min.js"
 ];

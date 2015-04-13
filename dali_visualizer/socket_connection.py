@@ -1,5 +1,12 @@
 from sockjs.tornado import SockJSConnection
 import json
+import tornadoredis
+
+c = tornadoredis.Client()
+c.connect()
+
+import tornado.web
+import tornado.gen
 
 class Connection(SockJSConnection):
     clients = set()
@@ -23,6 +30,7 @@ class Connection(SockJSConnection):
             'data': message
         }))
 
+    @tornado.gen.coroutine
     def on_open(self, request):
         """
         Choose what model updates to listen to in visualizer:
@@ -30,7 +38,13 @@ class Connection(SockJSConnection):
         self.authenticated = True
         self.channel = None
         # choose the channel
-        self.send_message({}, 'pick_channel')
+        available_channels = yield tornado.gen.Task(c.keys, "namespace_*")
+        self.send_message(
+            {
+                "available_channels": [ch.replace("namespace_", "feed_") for ch in available_channels] # available channels
+            },
+            'pick_channel' # what to name the channel
+        )
         self.clients.add(self)
 
     def on_message(self, msg):
@@ -52,4 +66,5 @@ class Connection(SockJSConnection):
     def pubsub_message(cls, msg):
         for client in cls.clients:
             if client.authenticated and client.channel == msg.channel:
-                client.send_message(msg.body, "data")
+                # here is what redis sends
+                client.send(msg.body)
