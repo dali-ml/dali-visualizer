@@ -1,12 +1,8 @@
 from sockjs.tornado import SockJSConnection
 import json
-import tornadoredis
-
-c = tornadoredis.Client()
-c.connect()
-
 import tornado.web
 import tornado.gen
+from .utils import get_redis
 
 class Connection(SockJSConnection):
     clients = set()
@@ -38,7 +34,7 @@ class Connection(SockJSConnection):
         self.authenticated = True
         self.channel = None
         # choose the channel
-        available_channels = yield tornado.gen.Task(c.keys, "namespace_*")
+        available_channels = yield tornado.gen.Task(get_redis().keys, "namespace_*")
         self.send_message(
             {
                 "available_channels": [ch.replace("namespace_", "feed_") for ch in available_channels] # available channels

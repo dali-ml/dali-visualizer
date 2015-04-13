@@ -5,6 +5,7 @@ import logging
 import tornadoredis
 import signal
 from sockjs.tornado     import SockJSRouter
+from .utils             import get_redis, init_redis
 from .socket_connection import Connection
 from .static_files      import routes as StaticRoutes
 
@@ -61,7 +62,11 @@ class RedisVisualizer(object):
         # 2. Start a connection pool to redis:
         pool = tornadoredis.ConnectionPool(host=redis_host, port=redis_port)
         self.clients = tornadoredis.Client(connection_pool=pool, password="")
+        init_redis(
+            tornadoredis.Client(connection_pool=pool, password="")
+        )
         self.clients.connect()
+        get_redis().connect()
         # 3. listen to events on feed_*, namespace_*
         try:
             self.clients.psubscribe( subscriptions, lambda msg: self.clients.listen(Connection.pubsub_message))
