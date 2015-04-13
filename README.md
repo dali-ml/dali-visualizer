@@ -1,6 +1,8 @@
 Dali Visualizer
 ===============
 
+![Babi visual](readme_images/dali_visualizer_babi.png)
+
 Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/JonathanRaiman/recurrentjs). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
 
 ### Dependencies
