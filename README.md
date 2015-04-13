@@ -17,9 +17,10 @@ To install the dependencies for Javascript and Python run
 these commands:
 
 ```bash
-pip3 install -r requirements
+pip3 install -r requirements.txt
 cd dali-visualizer
 npm install
+npm install -g gulp
 gulp
 ```
 
