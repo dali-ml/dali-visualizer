@@ -33,7 +33,7 @@ gulp
 Start the server from *top-level directory*:
 
 ```bash
-python3 run_server.py
+./run.sh
 ```
 
 And now head to [localhost:8000](http://localhost:8000)!
