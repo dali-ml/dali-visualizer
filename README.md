@@ -21,12 +21,14 @@ pip3 install -r requirements.txt
 cd dali-visualizer
 npm install
 npm install -g gulp
+npm install -g bower
+bower install
 gulp
 ```
 
 ### Run visualizer
 
-Start the server from top-level directory:
+Start the server from *top-level directory*:
 
 ```bash
 python3 run_server.py
