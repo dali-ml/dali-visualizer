@@ -147,7 +147,13 @@ var FiniteDistribution = React.createClass({
                 liquid_width = '' + percent + '%'
             }
             var liquid_style = {'width': liquid_width };
-            var label = labels[idx] + ": " + percent + '%';
+            if (this.props.distribution.scores !== undefined) {
+                var score = this.props.distribution.scores[idx];
+                score = Math.round(1000.0 * score) / 1000.0;
+                var label = labels[idx] + ": " + score;
+            } else {
+                var label = labels[idx] + ": " + percent + '%';
+            }
             boxes.push(
                 <div className="tank">
                     <div className="liquid" style={liquid_style} />
