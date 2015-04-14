@@ -69,11 +69,9 @@ rect.neg {
     fill: gray;
 }
 
-.row.container-height {
-    overflow: hidden;
-}
-
-.row.container-height > [class*="col-"]{
-    margin-bottom: -99999px;
-    padding-bottom: 99999px;
+.row-same-height {
+    display: table;
+    width: 100%;
+    /* fix overflow */
+    table-layout: fixed;
 }

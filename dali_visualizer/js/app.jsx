@@ -112,11 +112,10 @@ var QA = React.createClass({
     render: function () {
         return (
             <div className="card feed-elem">
-                <div className="context">
+                <div className="card-content context">
                     <Sentences sentences={this.props.qa.context} />
                 </div>
-                <hr className="qa-line" />
-                <div className="question-answer">
+                <div className="card-content question-answer">
                     <b>
                         <Sentence sentence={this.props.qa.question}/>
                         {"A: "}
@@ -171,12 +170,14 @@ var ClassifierExample = React.createClass({
         return (
             <div className="classifier_example table">
                 <div className="row">
-                    <div className="col s12 m6">
+                  <div className="valign-wrapper">
+                    <div className="col s12 m6 valign">
                         {VisualizerFor(this.props.example.input)}
                     </div>
-                    <div className="col s12 m6">
+                    <div className="col s12 m6 valign">
                         {VisualizerFor(this.props.example.output)}
                     </div>
+                  </div>
                 </div>
             </div>
         );
