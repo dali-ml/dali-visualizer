@@ -77,7 +77,7 @@ redirect_stderr=true
 stdout_logfile=/var/log/redis.log
 
 [program:dali_visualizer]
-command=/home/mers/dali-visualizer/run.sh
+command=python3 /home/mers/dali-visualizer/run_server.py
 redirect_stderr=true
 stdout_logfile=/var/log/dali_visualizer.log
 directory=/home/mers/dali-visualizer
