@@ -71,11 +71,9 @@ var Sentence = React.createClass({
         }
 
         return (
-            <p className="caption">
-                <font style={font_style}>
-                    {words_elt}
-                </font>
-            </p>
+            <font style={font_style}>
+                {words_elt}
+            </font>
         )
     }
 });
@@ -95,9 +93,12 @@ var Sentences = React.createClass({
                 color = color_str(value, value, value);
             }
             sentences_as_elt.push(
-                <Sentence key={"sentence_" + i}
-                          sentence={sentences[i]}
-                          color={color} />
+                <div>
+                    <Sentence key={"sentence_" + i}
+                              sentence={sentences[i]}
+                              color={color} />
+                    <br />
+                </div>
             );
         }
         return (
@@ -111,16 +112,19 @@ var Sentences = React.createClass({
 var QA = React.createClass({
     render: function () {
         return (
-            <div className="card feed-elem">
+            <div>
                 <div className="card-content context">
                     <Sentences sentences={this.props.qa.context} />
                 </div>
                 <div className="card-content question-answer">
                     <b>
                         <Sentence sentence={this.props.qa.question}/>
-                        {"A: "}
-                        <Sentence sentence={this.props.qa.answer} color="steelblue" />
                     </b>
+                </div>
+                <div className="divider" />
+                <div className="card-content">
+                    <b>Correct answer: </b>
+                    <Sentence sentence={this.props.qa.answer} color="lightskyblue" />
                 </div>
             </div>
         );
@@ -164,7 +168,7 @@ var FiniteDistribution = React.createClass({
             )
         }
         return (
-            <div className="card feed-elem">
+            <div className="card-content">
                 {boxes}
             </div>
         );
@@ -174,14 +178,20 @@ var FiniteDistribution = React.createClass({
 var ClassifierExample = React.createClass({
     render: function () {
         return (
-            <div className="classifier_example table">
+            <div className="classifier_example">
                 <div className="row">
                   <div className="valign-wrapper">
                     <div className="col s12 m6 valign">
-                        {VisualizerFor(this.props.example.input)}
+                        <div className="card feed-elem">
+                            <span className="card-title grey-text text-darken-4">Example</span>
+                            {VisualizerFor(this.props.example.input)}
+                        </div>
                     </div>
                     <div className="col s12 m6 valign">
-                        {VisualizerFor(this.props.example.output)}
+                        <div className="card feed-elem">
+                            <span className="card-title grey-text text-darken-4">Prediction</span>
+                            {VisualizerFor(this.props.example.output)}
+                        </div>
                     </div>
                   </div>
                 </div>
