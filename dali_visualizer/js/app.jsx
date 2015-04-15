@@ -71,9 +71,9 @@ var Sentence = React.createClass({
         }
 
         return (
-            <font style={font_style}>
+            <span style={font_style}>
                 {words_elt}
-            </font>
+            </span>
         )
     }
 });
