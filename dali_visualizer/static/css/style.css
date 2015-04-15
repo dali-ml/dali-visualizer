@@ -1,5 +1,5 @@
 body {
-    background: #fff;
+    background: blue;
 }
 
 .context p {
@@ -10,7 +10,6 @@ body {
 .feed.container {
     padding-top: 20px;
 }
-
 
 .question-answer p {
     display: inline-block;

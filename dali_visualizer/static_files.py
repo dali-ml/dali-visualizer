@@ -5,6 +5,7 @@ files from the static folder in this project.
 import os
 from tornado.web import StaticFileHandler, RequestHandler, HTTPError
 import datetime
+import time
 from react.jsx import JSXTransformer, TransformError
 
 server_dir  = os.path.abspath(os.path.dirname(__file__))
@@ -18,8 +19,11 @@ class NoCacheStaticFileHandler(StaticFileHandler):
         self.set_header('Cache-Control', 'no-cache, must-revalidate')
         self.set_header('Expires', '0')
         now = datetime.datetime.now()
-        expiration = datetime.datetime(now.year-1, now.month, now.day)
-        self.set_header('Last-Modified', expiration)
+
+        if os.path.sep != "/":
+            path = path.replace("/", os.path.sep)
+        abspath = os.path.abspath(os.path.join(self.root, path))
+        self.set_header('Last-Modified', time.ctime(os.path.getmtime(abspath)))
 
 class IndexHandler(RequestHandler):
     def get(self):
