@@ -15,15 +15,9 @@ class NoCacheStaticFileHandler(StaticFileHandler):
     """ Request static file handlers for development and debug only.
     It disables any caching for static file.
     """
-    def set_extra_headers(self, path):
-        self.set_header('Cache-Control', 'no-cache, must-revalidate')
-        self.set_header('Expires', '0')
-        now = datetime.datetime.now()
-
-        if os.path.sep != "/":
-            path = path.replace("/", os.path.sep)
-        abspath = os.path.abspath(os.path.join(self.root, path))
-        self.set_header('Last-Modified', time.ctime(os.path.getmtime(abspath)))
+    @classmethod
+    def _get_cached_version(cls, abs_path):
+        return None
 
 class IndexHandler(RequestHandler):
     def get(self):
