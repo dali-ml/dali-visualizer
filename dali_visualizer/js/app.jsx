@@ -39,7 +39,9 @@ var DropDown = React.createClass({
         }.bind(this));
         return (
             <li>
-                <a className="dropdown-button" href="#!" onClick={this.toggleDropDown}>
+                <a className="dropdown-button"
+                   href="#!"
+                   onClick={this.toggleDropDown}>
                     {current_active}<i class="mdi-navigation-arrow-drop-down right"></i>
                 </a>
                 <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
@@ -49,7 +51,6 @@ var DropDown = React.createClass({
         );
     }
 });
-
 
 var Sentence = React.createClass({
     render: function () {
@@ -63,10 +64,21 @@ var Sentence = React.createClass({
         }
         var words_elt = [];
         for (var idx = 0; idx < words.length; ++idx) {
-            var word_style = {
-                'font-size': 12 + Math.round(5 * weights[idx])
+            if (weights[idx] !== undefined) {
+                var word_style = {
+                    'backgroundColor': 'rgba(255, 251, 78, ' + weights[idx] + ")"
+                };
+                var tooltip_els = [
+                    <span>memory = </span>,
+                    <span className="numerical">{weights[idx].toFixed(2)}</span>
+                ];
+                words_elt.push(
+                    <TooltipWord style={word_style}
+                                 tooltip={tooltip_els}>{words[idx]}
+                    </TooltipWord>);
+            } else {
+                words_elt.push(<span>{words[idx]}</span>);
             }
-            words_elt.push(<span style={word_style}>{words[idx]}</span>);
             words_elt.push(<span>{" "}</span>);
         }
 
@@ -314,6 +326,7 @@ var VisualizationServer = React.createClass({
                         <ul className="right hide-on-med-and-down">
                             <DropDown onChange={this.onChangeSubscription}
                                       options={options}
+                                      tooltip={"Choose which feed to listen to for updates."}
                                       placeholder="Select Feed" />
                         </ul>
                     </div>

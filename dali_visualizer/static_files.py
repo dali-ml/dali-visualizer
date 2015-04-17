@@ -23,7 +23,7 @@ class IndexHandler(RequestHandler):
     def get(self):
         self.render(index_route)
 
-class ReactHandler(RequestHandler):
+class ReactHandler(StaticFileHandler):
     def initialize(self, path):
         self.root = os.path.abspath(path) + os.path.sep
         self.jsx  = JSXTransformer()
@@ -35,6 +35,7 @@ class ReactHandler(RequestHandler):
         if os.path.sep != "/":
             path = path.replace("/", os.path.sep)
         abspath = os.path.abspath(os.path.join(self.root, path))
+        self.absolute_path = abspath
         # some default errors:
         if not (abspath + os.path.sep).startswith(self.root):
             raise HTTPError(403, "%s is not in root static directory", path)
@@ -52,22 +53,28 @@ class ReactHandler(RequestHandler):
             raise HTTPError(403, "%s is not a file", path)
 
         if abspath.endswith(".js") and os.path.exists(abspath + "x"):
+            print("checking age of %s" % (path))
             if os.path.getmtime(abspath + "x") > os.path.getmtime(abspath):
                 # more recent JSX file than JS
                 try:
                     self.jsx.transform(abspath + "x", js_path=abspath)
                 except Exception as e:
                     raise HTTPError(500, "Could not transform %s into a JS file. %s" % (os.path.basename(abspath + "x"), str(e)))
+            else:
+                print("%s is young enough" % (path))
             # else the generated file is recent enough
         self.render(abspath)
-        self.set_extra_headers(path)
 
     def set_extra_headers(self, path):
         self.set_header('Cache-Control', 'no-cache, must-revalidate')
         self.set_header('Expires', '0')
-        now = datetime.datetime.now()
-        expiration = datetime.datetime(now.year-1, now.month, now.day)
-        self.set_header('Last-Modified', expiration)
+        # now = datetime.datetime.now()
+        # expiration = datetime.datetime(now.year-1, now.month, now.day)
+        self.set_header('Last-Modified', time.ctime(os.path.getmtime(self.absolute_path)))
+
+    @classmethod
+    def _get_cached_version(cls, abs_path):
+        return None
 
 routes = [
             (r"/", IndexHandler),
