@@ -38,3 +38,11 @@
   width: 0%;
   background: lightskyblue;
 }
+
+.feed.container {
+  padding: 0;
+}
+
+.numerical {
+  color: lightskyblue;
+}

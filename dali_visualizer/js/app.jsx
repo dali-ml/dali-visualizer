@@ -193,13 +193,13 @@ var ClassifierExample = React.createClass({
             <div className="classifier_example">
                 <div className="row">
                   <div className="valign-wrapper">
-                    <div className="col s12 m6 valign">
+                    <div className="col s12 m6 valign nanopadding">
                         <div className="card feed-elem">
                             <span className="card-title grey-text text-darken-4">Example</span>
                             {VisualizerFor(this.props.example.input)}
                         </div>
                     </div>
-                    <div className="col s12 m6 valign">
+                    <div className="col s12 m6 valign nanopadding">
                         <div className="card feed-elem">
                             <span className="card-title grey-text text-darken-4">Prediction</span>
                             {VisualizerFor(this.props.example.output)}
@@ -256,7 +256,7 @@ var Notifications = React.createClass({
             );
         });
         return (
-            <div className="container">{els}</div>
+            <div className="">{els}</div>
         );
     }
 });

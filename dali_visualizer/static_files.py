@@ -27,6 +27,13 @@ class ReactHandler(StaticFileHandler):
     def initialize(self, path):
         self.root = os.path.abspath(path) + os.path.sep
         self.jsx  = JSXTransformer()
+        self.settings.setdefault('compiled_template_cache', False)
+
+    def try_transform(self, abspath):
+        try:
+            self.jsx.transform(abspath + "x", js_path=abspath)
+        except Exception as e:
+            raise HTTPError(500, "Could not transform %s into a JS file. %s" % (os.path.basename(abspath + "x"), str(e)))
 
     def get(self, path):
         """
@@ -42,10 +49,7 @@ class ReactHandler(StaticFileHandler):
         if not os.path.exists(abspath):
             # special case, check if jsx file exists.
             if abspath.endswith(".js") and os.path.exists(abspath + "x"):
-                try:
-                    self.jsx.transform(abspath + "x", js_path=abspath)
-                except Exception as e:
-                    raise HTTPError(500, "Could not transform %s into a JS file. %s" % (os.path.basename(abspath + "x"), str(e)))
+                self.try_transform(abspath)
                 # transformation to JS was successful.
             else:
                 raise HTTPError(404)
@@ -53,24 +57,15 @@ class ReactHandler(StaticFileHandler):
             raise HTTPError(403, "%s is not a file", path)
 
         if abspath.endswith(".js") and os.path.exists(abspath + "x"):
-            print("checking age of %s" % (path))
             if os.path.getmtime(abspath + "x") > os.path.getmtime(abspath):
                 # more recent JSX file than JS
-                try:
-                    self.jsx.transform(abspath + "x", js_path=abspath)
-                except Exception as e:
-                    raise HTTPError(500, "Could not transform %s into a JS file. %s" % (os.path.basename(abspath + "x"), str(e)))
-            else:
-                print("%s is young enough" % (path))
+                self.try_transform(abspath)
             # else the generated file is recent enough
+        template_path = self.get_template_path()
+        if not template_path:
+            template_path = os.path.dirname(os.path.abspath(__file__))
+        loader = RequestHandler._template_loaders[template_path]
         self.render(abspath)
-
-    def set_extra_headers(self, path):
-        self.set_header('Cache-Control', 'no-cache, must-revalidate')
-        self.set_header('Expires', '0')
-        # now = datetime.datetime.now()
-        # expiration = datetime.datetime(now.year-1, now.month, now.day)
-        self.set_header('Last-Modified', time.ctime(os.path.getmtime(self.absolute_path)))
 
     @classmethod
     def _get_cached_version(cls, abs_path):

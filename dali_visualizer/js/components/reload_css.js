@@ -27,7 +27,7 @@
       pendingRequests = {},
       currentLinkElements = {},
       oldLinkElements = {},
-      interval = 1000,
+      interval = 200,
       loaded = false,
       active = { "html": 1, "css": 1, "js": 1 };
 
@@ -37,6 +37,7 @@
     heartbeat: function () {
       if (document.body) {
         // make sure all resources are loaded on first activation
+        console.log("hello");
         if (!loaded) Live.loadresources();
         Live.checkForChanges();
       }
@@ -70,6 +71,7 @@
             alert("Live.js is loaded.");
         }
       }
+
       if (!active.js) uris = [];
       if (active.html) uris.push(document.location.href);
 

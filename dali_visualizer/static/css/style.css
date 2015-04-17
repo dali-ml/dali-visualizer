@@ -74,3 +74,25 @@ rect.neg {
     /* fix overflow */
     table-layout: fixed;
 }
+.feed .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.nopadding, div.nopadding {
+    padding: 0 !important;
+}
+
+.nanopadding, div.nanopadding {
+    padding: 2px !important;
+}
+
+@media only screen and (max-width: 713px) {
+    /*
+    Make feed larger on mobile
+    */
+    .feed.container {
+        width: 100%;
+    }
+}
+
