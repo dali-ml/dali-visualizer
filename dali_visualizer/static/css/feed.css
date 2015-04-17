@@ -46,3 +46,8 @@
 .numerical {
   color: lightskyblue;
 }
+
+.sentence:hover {
+  background: rgba(17, 146, 252, 0.1);
+  cursor: pointer;
+};
