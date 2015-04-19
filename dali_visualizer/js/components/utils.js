@@ -1,11 +1,15 @@
 function normalize_weights(weights) {
-    var result = weights.slice(0);
-    var minimum = Math.min.apply(Math, weights);
-    var maximum = Math.max.apply(Math, weights);
-    for (var idx=0; idx < weights.length; ++idx) {
-        result[idx] = (weights[idx] - minimum ) / (maximum-minimum);
+    if (weights.length > 1) {
+        var result = weights.slice(0);
+        var minimum = Math.min.apply(Math, weights);
+        var maximum = Math.max.apply(Math, weights);
+        for (var idx=0; idx < weights.length; ++idx) {
+            result[idx] = (weights[idx] - minimum ) / (maximum-minimum);
+        }
+        return result;
+    } else {
+        return weights;
     }
-    return result;
 }
 
 function color_str(r, g, b, a) {

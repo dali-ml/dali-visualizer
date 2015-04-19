@@ -53,11 +53,21 @@ var DropDown = React.createClass({
 });
 
 var Sentences = React.createClass({
+    getDefaultProps: function () {
+        return {
+            normalize_weights: false,
+            color: "black",
+            sentences: {
+                sentences: [],
+                weights: []
+            }
+        };
+    },
     render: function () {
         var sentences = this.props.sentences.sentences;
         var weights = this.props.sentences.weights;
         var sentences_as_elt = [];
-        if (weights) {
+        if (weights && this.props.normalize_weights) {
             weights = normalize_weights(weights);
         }
         for (var i=0; i < sentences.length; ++i) {
@@ -166,7 +176,9 @@ var ClassifierExample = React.createClass({
                   <div className="valign-wrapper">
                     <div className="col s12 m6 valign nanopadding">
                         <div className="card feed-elem">
-                            <span className="card-title grey-text text-darken-4">Example</span>
+                            <div>
+                                <span className="card-title grey-text text-darken-4">Example</span>
+                            </div>
                             {VisualizerFor(this.props.example.input)}
                         </div>
                     </div>
@@ -200,7 +212,7 @@ var VisualizerFor = function (el) {
         return <QA qa={el} />;
     } else if (el.type == "finite_distribution") {
         return <FiniteDistribution distribution={el} />
-    } else if (el.type == "sentence") {
+    } else if (el.type == "sentences") {
         return <Sentences sentences={el} />;
     } else if (el.type == "sentence") {
         return <Sentence sentence={el} />;

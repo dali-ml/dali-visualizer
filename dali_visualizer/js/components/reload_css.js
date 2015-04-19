@@ -37,7 +37,6 @@
     heartbeat: function () {
       if (document.body) {
         // make sure all resources are loaded on first activation
-        console.log("hello");
         if (!loaded) Live.loadresources();
         Live.checkForChanges();
       }

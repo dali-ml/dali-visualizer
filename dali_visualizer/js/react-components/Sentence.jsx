@@ -3,13 +3,21 @@
 */
 
 var Sentence = React.createClass({
-    render: function () {
-        var font_style = {
-            'color': this.props.color || "black"
+    getDefaultProps: function () {
+        return {
+            normalize_weights: false,
+            color: "black",
+            sentence: {
+                words: [],
+                weights: []
+            }
         };
+    },
+    render: function () {
+        var font_style = {'color': this.props.color};
         var words = this.props.sentence.words;
         var weights = this.props.sentence.weights;
-        if (weights) {
+        if (weights && this.props.normalize_weights) {
             weights = normalize_weights(weights);
         }
         var words_elt = [];
