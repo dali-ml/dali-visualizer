@@ -301,21 +301,30 @@ var VisualizationServer = React.createClass({
                 active: current_channel == opt
             }
         });
+        var no_available_channels = "";
+        if (this.state.available_channels.length === 0 && this.state.messages.length === 0) {
+            no_available_channels = (
+                <div className="center">
+                    <p>No Experiments Found</p>
+                    <p className="light">Refresh the page to listen for new experiments</p>
+                </div>);
+        }
         return (
             <div className="dali-visualizer">
                 <nav className="top-nav">
                     <div className="nav-wrapper">
                         <a className="brand-logo center" href="#">Dali Visualizer</a>
-                        <ul className="right hide-on-med-and-down">
+                        <ul className="left">
                             <DropDown onChange={this.onChangeSubscription}
                                       options={options}
-                                      tooltip={"Choose which feed to listen to for updates."}
-                                      placeholder="Select Feed" />
+                                      tooltip={"Choose which experiment's updates are shown."}
+                                      placeholder="Select Experiment" />
                         </ul>
                     </div>
                 </nav>
                 <div className="feed container">
                     <Notifications messages={this.state.messages} />
+                    {no_available_channels}
                 </div>
             </div>);
     }
