@@ -26,10 +26,11 @@ nav ul li {
 }
 nav {
     overflow: visible;
+    background-color: #0087F7;
 }
 
 .dropdown-inner {
-    background: #fff;
+    background: #F7F7F7;
     top: 0px;
     position: absolute;
     width: 100%;
@@ -53,11 +54,22 @@ nav {
     width: 100%;
 }
 .dropdown-inner li, .dropdown-inner li a {
-    color: black;
-    color: rgba(0, 0, 0, 0.870588);
+    color: #91959B;
 }
 .dropdown-inner li {
     cursor: pointer;
+}
+
+.dropdown-inner li a.active {
+    color: black;
+}
+.dropdown-inner li:hover, .dropdown-inner li:active {
+    background: #105EBE;
+    border-bottom: 1px solid rgba(13, 79, 161, 0.2);
+    border-top: 1px solid rgba(13, 79, 161, 0.2);
+}
+.dropdown-inner li a:hover, .dropdown-inner li a:active {
+    color: #fff;
 }
 
 rect.pos {

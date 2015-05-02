@@ -22,7 +22,7 @@ var Sentence = React.createClass({
         }
         var words_elt = [];
         for (var idx = 0; idx < words.length; ++idx) {
-            if (weights[idx] !== undefined) {
+            if (weights && weights[idx] !== undefined) {
                 var word_style = {
                     'backgroundColor': 'rgba(255, 251, 78, ' + weights[idx] + ")"
                 };

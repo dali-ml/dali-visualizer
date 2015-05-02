@@ -9,13 +9,41 @@ var NewChannel = function (new_channel) {
     };
 };
 
+var ExpiredChannel = function (expired_channel) {
+    return {
+         type: "channel_expired",
+         data: expired_channel
+    };
+};
+
 var DropDown = React.createClass({
     getInitialState: function () {
         return {
             active: false
         };
     },
-    toggleDropDown: function() {
+    remove_background_callback: function () {
+        document.removeEventListener('click', this.documentClickHandler);
+    },
+    add_background_callback: function () {
+        document.addEventListener('click', this.documentClickHandler);
+    },
+    documentClickHandler: function (e) {
+        this.setState({
+            active: false
+        });
+    },
+    toggleDropDown: function(e) {
+        if (arguments.length > 0) {
+            e.stopImmediatePropagation();
+        }
+        console.log("toggled");
+        if (this.state.active) {
+            this.remove_background_callback();
+        } else {
+            this.add_background_callback();
+        }
+
         this.setState({
             active: this.state.active ? false : true
         });
@@ -24,13 +52,23 @@ var DropDown = React.createClass({
         this.toggleDropDown();
         this.props.onChange(option);
     },
+    dropdown_click: function (e) {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        this.toggleDropDown();
+    },
     render: function () {
         var current_active = this.props.placeholder;
         var options = this.props.options.map( function (op, i) {
             if (op.active) {
                 current_active = op.name;
             }
-            var cb = function () {this.choose_dropdown_item(op.name);}.bind(this);
+            var cb = function (e) {
+                console.log("clicking dropdown");
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+                this.choose_dropdown_item(op.name);
+            }.bind(this);
             return (
                 <li key={"op_" + i} onClick={cb}>
                     <a className={op.active ? "active" : ""}>{op.name}</a>
@@ -41,7 +79,7 @@ var DropDown = React.createClass({
             <li>
                 <a className="dropdown-button"
                    href="#!"
-                   onClick={this.toggleDropDown}>
+                   onClick={this.dropdown_click}>
                     {current_active}<i class="mdi-navigation-arrow-drop-down right"></i>
                 </a>
                 <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
@@ -218,6 +256,17 @@ var ChannelSwitch = React.createClass({
     }
 });
 
+var ChannelExpiration = React.createClass({
+    render: function () {
+        return (
+            <div className="card-panel">
+                disconnected from channel <strong>{this.props.channel.data}</strong>.
+            </div>
+        );
+    }
+});
+
+
 var VisualizerFor = function (el) {
     if (el.type == "classifier_example") {
         return <ClassifierExample example={el} />
@@ -231,6 +280,8 @@ var VisualizerFor = function (el) {
         return <Sentence sentence={el} />;
     } else if (el.type == "channel_switch") {
         return <ChannelSwitch channel={el}/>
+    } else if (el.type == "channel_expired") {
+        return <ChannelExpiration channel={el}/>
     } else {
         return el;
     }
@@ -285,7 +336,58 @@ var VisualizationServer = React.createClass({
                 available_channels: event.data.data.available_channels,
                 messages: new_messages
             });
-        } else {
+        } else if (event.data.type == 'keyspace_event') {
+            // notice something is happening to the keyspace
+            var channel_evoked = "feed_" + event.data.data.channel.split("namespace_")[1];
+            var action = event.data.data.message.toLowerCase();
+
+            if (action == "set") {
+                var available_channels = this.state.available_channels;
+                if (this.state.available_channels.indexOf(channel_evoked) == -1) {
+                    available_channels = available_channels.concat([channel_evoked]);
+                }
+                if (this.state.channel === null) {
+                    var new_messages = prepend(
+                        this.state.messages,
+                        NewChannel(channel_evoked)
+                    );
+                    this.setState({
+                        channel: channel_evoked,
+                        available_channels: available_channels,
+                        messages: new_messages
+                    });
+                } else {
+                    // just add the new channel
+                    this.setState({
+                        available_channels: available_channels
+                    });
+                }
+            } else if (action == "expired" || action == "del") {
+                var index_of_expired_channel = this.state.available_channels.indexOf(channel_evoked);
+                if (index_of_expired_channel != -1) {
+                    var available_channels = this.state.available_channels.slice(0);
+                    available_channels.splice(
+                        index_of_expired_channel,
+                        1
+                    );
+
+                    // mark the channel as expired
+                    if (this.state.channel == channel_evoked) {
+                        this.setState({
+                            channel: null,
+                            available_channels: available_channels,
+                            messages: prepend(this.state.messages, ExpiredChannel(channel_evoked))
+                        });
+                    } else {
+                        this.setState({
+                            available_channels: available_channels
+                        });
+                    }
+                }
+            } else {
+                if (window.console && console) console.log(channel_evoked, "=>", action);
+            }
+        } else {
             this.setState({
                 messages: prepend(this.state.messages, event.data)
             });
@@ -319,7 +421,21 @@ var VisualizationServer = React.createClass({
             no_available_channels = (
                 <div className="center">
                     <p>No Experiments Found</p>
-                    <p className="light">Refresh the page to listen for new experiments</p>
+                    <p className="light">Start an experiment using <b>Dali</b></p>
+                    <p className="light">To test the visualizer you can use <code>redis-cli</code></p>
+                    <pre style={{"textAlign": "left"}}>{
+                        '\n' +
+                        'SET namespace_experiment 1 EX 5\n' +
+                        'PUBLISH feed_experiment \'{\n' +
+                        '    "type":"classifier_example",\n' +
+                        '    "input": {\n' +
+                        '        "type": "sentence",\n' +
+                        '        "words": ["hello"]\n' +
+                        '    },\n' +
+                        '    "output": {\n' +
+                        '        "type": "sentence",\n' +
+                        '        "words": ["world"]\n' +
+                        '    }}\'\n'}</pre>
                 </div>);
         }
         return (

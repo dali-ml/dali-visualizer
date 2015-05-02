@@ -60,7 +60,19 @@ class Connection(SockJSConnection):
 
     @classmethod
     def pubsub_message(cls, msg):
-        for client in cls.clients:
-            if client.authenticated and client.channel == msg.channel:
-                # here is what redis sends
-                client.send(msg.body)
+        if msg.channel.startswith('__keyspace@'):
+            for client in cls.clients:
+                if client.authenticated:
+                    # report change in keyspace
+                    client.send(json.dumps({
+                        'type': 'keyspace_event',
+                        'data': {
+                            "message": msg.body,
+                            "channel": msg.channel
+                        }
+                    }))
+        else:
+            for client in cls.clients:
+                if client.authenticated and client.channel == msg.channel:
+                    # here is what redis sends
+                    client.send(msg.body)

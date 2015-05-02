@@ -58,7 +58,7 @@ class RedisVisualizer(object):
         """
         self.exit_gracefully = exit_gracefully
         if subscriptions is None:
-            subscriptions = ["namespace_*", "feed_*"]
+            subscriptions = ["feed_*", "__keyspace@0__:namespace_*"]
         # 2. Start a connection pool to redis:
         pool = tornadoredis.ConnectionPool(host=redis_host, port=redis_port)
         self.clients = tornadoredis.Client(connection_pool=pool, password="")
@@ -67,6 +67,8 @@ class RedisVisualizer(object):
         )
         self.clients.connect()
         get_redis().connect()
+        # make sure redis reports expiration and set events:
+        get_redis().execute_command('config', 'set', 'notify-keyspace-events', 'AKE')
         # 3. listen to events on feed_*, namespace_*
         try:
             self.clients.psubscribe( subscriptions, lambda msg: self.clients.listen(Connection.pubsub_message))
