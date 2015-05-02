@@ -27,7 +27,7 @@ var Sentence = React.createClass({
                     'backgroundColor': 'rgba(255, 251, 78, ' + weights[idx] + ")"
                 };
                 var tooltip_els = [
-                    <span>memory = </span>,
+                    <span>activation = </span>,
                     <span className="numerical">{weights[idx].toFixed(2)}</span>
                 ];
                 words_elt.push(

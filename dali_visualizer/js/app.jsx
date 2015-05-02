@@ -70,13 +70,26 @@ var Sentences = React.createClass({
         if (weights && this.props.normalize_weights) {
             weights = normalize_weights(weights);
         }
+        var is_log_likelihood = false;
+        if (weights && !(this.props.normalize_weights)) {
+            if (weights.length > 0) {
+                is_log_likelihood = weights[0] < 0;
+            }
+            // check if all weights are negative:
+            for (var i = 1; i < weights.length; ++i) {
+                is_log_likelihood = (weights[i] < 0) && is_log_likelihood;
+            }
+        }
+        if (weights && is_log_likelihood) {
+            weights = inplace_softmax(weights);
+        }
         for (var i=0; i < sentences.length; ++i) {
             var color = "black";
             if (weights) {
                 var value = 0.7 * (1.0 - weights[i]);
                 color = color_str(value, value, value);
                 var tooltip_els = [
-                    <span>sentence memory = </span>,
+                    <span>activation = </span>,
                     <span className="numerical">{weights[i].toFixed(2)}</span>
                 ];
                 sentences_as_elt.push(
