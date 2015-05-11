@@ -16,12 +16,27 @@ import os
 from os.path import join, dirname, abspath
 
 if __name__ == "__main__":
-    if not check_and_download(
-            js=join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "js"), "vendor"),
-            css=join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "vendor")
-        ):
+
+    JS_DIR = join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "js"), "vendor")
+    CSS_DIR = join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "vendor")
+
+    got_js = check_and_download(
+        "http://darsain.github.io/tooltip/dist/tooltip.min.js",
+        JS_DIR
+    )
+    got_css = check_and_download(
+        "http://darsain.github.io/tooltip/dist/tooltip.css",
+        CSS_DIR
+    )
+
+    got_d3_js = check_and_download(
+        "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js",
+        JS_DIR
+    )
+
+    if not got_js or not got_css or not got_d3_js:
         print("""
-            Could not download Tooltip library.
+            Could not download Javascript and CSS support files.
             """)
         sys.exit()
 

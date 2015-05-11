@@ -269,19 +269,21 @@ var ChannelExpiration = React.createClass({
 
 var VisualizerFor = function (el) {
     if (el.type == "classifier_example") {
-        return <ClassifierExample example={el} />
+        return <ClassifierExample example={el} />;
     } else if (el.type == "qa") {
         return <QA qa={el} />;
     } else if (el.type == "finite_distribution") {
-        return <FiniteDistribution distribution={el} />
+        return <FiniteDistribution distribution={el} />;
     } else if (el.type == "sentences") {
         return <Sentences sentences={el} />;
     } else if (el.type == "sentence") {
         return <Sentence sentence={el} />;
     } else if (el.type == "channel_switch") {
-        return <ChannelSwitch channel={el}/>
+        return <ChannelSwitch channel={el}/>;
     } else if (el.type == "channel_expired") {
-        return <ChannelExpiration channel={el}/>
+        return <ChannelExpiration channel={el}/>;
+    } else if (el.type == "tree") {
+        return <Tree tree={el}/>;
     } else {
         return el;
     }
@@ -421,8 +423,8 @@ var VisualizationServer = React.createClass({
             no_available_channels = (
                 <div className="center">
                     <p>No Experiments Found</p>
-                    <p className="light">Start an experiment using <b>Dali</b></p>
-                    <p className="light">To test the visualizer you can use <code>redis-cli</code></p>
+                    <p className="light">Start an experiment using <a href="https://github.com/JonathanRaiman/Dali"><b>Dali</b></a></p>
+                    <p className="light">To test the visualizer you can use <a href="http://redis.io/topics/quickstart#check-if-redis-is-working"><code>redis-cli</code></a></p>
                     <pre style={{"textAlign": "left"}}>{
                         '\n' +
                         'SET namespace_experiment 1 EX 5\n' +
