@@ -108,3 +108,13 @@ rect.neg {
     }
 }
 
+/** TREES **/
+
+.tree circle {
+  stroke-width: 1.5px;
+}
+
+.tree line {
+  stroke: #999;
+}
+
