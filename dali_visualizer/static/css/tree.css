@@ -2,6 +2,10 @@
     fill: red;
 }
 
+.tree text {
+    font-size: 15pt;
+}
+
 .leaf circle {
     fill: blue;
 }

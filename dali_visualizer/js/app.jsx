@@ -455,7 +455,6 @@ var VisualizationServer = React.createClass({
                 </nav>
                 <div className="feed container">
                     <Notifications messages={this.state.messages} />
-                    <OutputTree />
                     {no_available_channels}
                 </div>
             </div>);
