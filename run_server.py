@@ -17,26 +17,43 @@ from os.path import join, dirname, abspath
 
 if __name__ == "__main__":
 
-    JS_DIR = join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "js"), "vendor")
+    JS_DIR  = join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "js"), "vendor")
     CSS_DIR = join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "vendor")
+    FONT_DIR = join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "font")
 
-    got_js = check_and_download(
+    js_libs = [
         "http://darsain.github.io/tooltip/dist/tooltip.min.js",
-        JS_DIR
-    )
-    got_css = check_and_download(
-        "http://darsain.github.io/tooltip/dist/tooltip.css",
-        CSS_DIR
-    )
-
-    got_d3_js = check_and_download(
         "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js",
-        JS_DIR
-    )
+        "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"
+    ]
 
-    if not got_js or not got_css or not got_d3_js:
+    css_libs = [
+        "http://darsain.github.io/tooltip/dist/tooltip.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css"
+    ]
+
+
+    font_libs = [
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-thin-webfont.woff", "roboto/Roboto-Thin.woff"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-thin-webfont.ttf", "roboto/Roboto-Thin.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-medium-webfont.woff", "roboto/Roboto-Medium.woff"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-medium-webfont.ttf", "roboto/Roboto-Medium.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-light-webfont.woff", "roboto/Roboto-Light.woff"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-light-webfont.ttf", "roboto/Roboto-Light.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-regular-webfont.woff", "roboto/Roboto-Regular.woff"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-regular-webfont.ttf", "roboto/Roboto-Regular.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-bold-webfont.woff", "roboto/Roboto-Bold.woff"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-bold-webfont.ttf", "roboto/Roboto-Bold.ttf")
+    ]
+
+    got_js  = all([check_and_download(url, JS_DIR) for url in js_libs])
+    got_css = all([check_and_download(url, CSS_DIR) for url in css_libs])
+    got_fonts = all([check_and_download(url, FONT_DIR) for url in font_libs])
+
+    if not got_js or not got_css or not got_fonts:
         print("""
-            Could not download Javascript and CSS support files.
+            Could not download Javascript, CSS, and Font support files.
             """)
         sys.exit()
 

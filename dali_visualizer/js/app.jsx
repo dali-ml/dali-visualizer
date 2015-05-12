@@ -283,7 +283,7 @@ var VisualizerFor = function (el) {
     } else if (el.type == "channel_expired") {
         return <ChannelExpiration channel={el}/>;
     } else if (el.type == "tree") {
-        return <Tree tree={el}/>;
+        return <OutputTree tree={el}/>;
     } else {
         return el;
     }

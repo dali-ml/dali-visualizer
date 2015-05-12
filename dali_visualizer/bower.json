@@ -1,8 +1,0 @@
-{
-  "name": "Dali Visualize",
-  "dependencies": {
-    "materialize": "~0.95.3",
-    "react": "~0.12.2",
-    "sockjs": "0.3.4"
-  }
-}
