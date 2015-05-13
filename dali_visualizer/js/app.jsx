@@ -290,7 +290,7 @@ var VisualizerFor = function (el) {
 };
 
 function prepend(list, el) {
-    return [el].concat(list);
+    return [el].concat(list.slice(0, 50));
 }
 
 var Notifications = React.createClass({
