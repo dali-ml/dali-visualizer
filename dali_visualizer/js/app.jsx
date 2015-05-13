@@ -219,28 +219,33 @@ var FiniteDistribution = React.createClass({
     }
 });
 
-var ClassifierExample = React.createClass({
+var GridLayout = React.createClass({
+
     render: function () {
-        return (
-            <div className="classifier_example">
-                <div className="row">
-                  <div className="valign-wrapper">
-                    <div className="col s12 m6 valign nanopadding">
-                        <div className="card feed-elem">
-                            <div>
-                                <span className="card-title grey-text text-darken-4">Example</span>
-                            </div>
-                            {VisualizerFor(this.props.example.input)}
-                        </div>
+        var column_els = [];
+        this.props.grid.forEach(function(column) {
+            var column_contents = [];
+            column.forEach(function(contents) {
+                column_contents.push(
+                    <div>
+                        {VisualizerFor(contents)}
                     </div>
-                    <div className="col s12 m6 valign nanopadding">
-                        <div className="card feed-elem">
-                            <span className="card-title grey-text text-darken-4">Prediction</span>
-                            {VisualizerFor(this.props.example.output)}
-                        </div>
+                );
+            });
+            column_els.push(
+                <div className="col s12 m6 valign nanopadding">
+                    <div className="card feed-elem">
+                        {column_contents}
                     </div>
-                  </div>
                 </div>
+            );
+        });
+
+        return (
+            <div className="row">
+              <div className="valign-wrapper">
+                  {column_els}
+              </div>
             </div>
         );
     }
@@ -268,8 +273,8 @@ var ChannelExpiration = React.createClass({
 
 
 var VisualizerFor = function (el) {
-    if (el.type == "classifier_example") {
-        return <ClassifierExample example={el} />;
+    if (el.type == "grid_layout") {
+        return <GridLayout grid={el.grid} />;
     } else if (el.type == "qa") {
         return <QA qa={el} />;
     } else if (el.type == "finite_distribution") {
