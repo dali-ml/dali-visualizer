@@ -263,6 +263,27 @@ var ChannelSwitch = React.createClass({
     }
 });
 
+
+var Probability = React.createClass({
+    render: function () {
+        var percent = Math.round(100*this.props.probability);
+
+        var liquid_style = {
+            'width' : '' + percent + '%',
+            'background': 'green'
+
+        };
+        var tank_style = {
+            'height' : 5
+        }
+        return (
+            <div className="tank" style={tank_style}>
+                <div className="liquid" style={liquid_style} />
+            </div>
+        );
+    }
+});
+
 var ChannelExpiration = React.createClass({
     render: function () {
         return (
@@ -275,6 +296,7 @@ var ChannelExpiration = React.createClass({
 
 
 var VisualizerFor = function (el) {
+    console.log(el);
     if (el.type == "grid_layout") {
         return <GridLayout grid={el.grid} />;
     } else if (el.type == "qa") {
@@ -291,6 +313,8 @@ var VisualizerFor = function (el) {
         return <ChannelExpiration channel={el}/>;
     } else if (el.type == "tree") {
         return <OutputTree tree={el}/>;
+    } else if (el.type == "probability") {
+        return <Probability probability={el.probability} />;
     } else {
         return el;
     }
