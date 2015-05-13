@@ -277,8 +277,11 @@ var Probability = React.createClass({
             'height' : 5
         }
         return (
-            <div className="tank" style={tank_style}>
-                <div className="liquid" style={liquid_style} />
+            <div>
+                <span className="label">{'' + percent + '%'}</span>
+                <div className="tank" style={tank_style}>
+                    <div className="liquid" style={liquid_style} />
+                </div>
             </div>
         );
     }
@@ -296,7 +299,6 @@ var ChannelExpiration = React.createClass({
 
 
 var VisualizerFor = function (el) {
-    console.log(el);
     if (el.type == "grid_layout") {
         return <GridLayout grid={el.grid} />;
     } else if (el.type == "qa") {
