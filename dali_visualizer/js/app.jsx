@@ -223,6 +223,8 @@ var GridLayout = React.createClass({
 
     render: function () {
         var column_els = [];
+        var cells = Math.max(Math.round(12 / (this.props.length)), 1);
+
         this.props.grid.forEach(function(column) {
             var column_contents = [];
             column.forEach(function(contents) {
@@ -233,7 +235,7 @@ var GridLayout = React.createClass({
                 );
             });
             column_els.push(
-                <div className="col s12 m6 valign nanopadding">
+                <div className={"col s12 m" + cells + " valign nanopadding"}>
                     <div className="card feed-elem">
                         {column_contents}
                     </div>
