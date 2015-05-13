@@ -265,6 +265,12 @@ var ChannelSwitch = React.createClass({
 
 
 var Probability = React.createClass({
+    mixins: [TooltipMixin],
+    tooltipContent: function () {
+        var percent = Math.round(100*this.props.probability);
+
+        return <div>{'' + percent + '%'}</div>;
+    },
     render: function () {
         var percent = Math.round(100*this.props.probability);
 
@@ -276,12 +282,13 @@ var Probability = React.createClass({
         var tank_style = {
             'height' : 5
         }
+        var sentence = {
+            'words' : ['o hai'],
+            'weights' : [ 0.1]
+        };
         return (
-            <div>
-                <span className="label">{'' + percent + '%'}</span>
-                <div className="tank" style={tank_style}>
-                    <div className="liquid" style={liquid_style} />
-                </div>
+            <div className="tank" style={tank_style}>
+                <div className="liquid" style={liquid_style} />
             </div>
         );
     }

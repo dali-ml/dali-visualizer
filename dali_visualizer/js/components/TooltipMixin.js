@@ -42,7 +42,7 @@ var TooltipMixin = {
     update: function(content) {
         var el = this.getDOMNode();
         var orientation = this.props.tooltipOrientation ? this.props.tooltipOrientation : "top";
-        React.renderComponent(content, gTooltip.element, function() {
+        React.render(content, gTooltip.element, function() {
             // Need to tell the tooltip that its contents have changed so
             // it can reposition itself correctly.
             gTooltip.attach(el).show().updateSize().place(orientation);
