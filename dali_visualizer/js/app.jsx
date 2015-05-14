@@ -425,7 +425,7 @@ var VisualizationServer = React.createClass({
                     }
                 }
             } else {
-                if (window.console && console) console.log(channel_evoked, "=>", action);
+                // if (window.console && console) console.log(channel_evoked, "=>", action);
             }
         } else {
             this.setState({
