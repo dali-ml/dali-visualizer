@@ -17,7 +17,6 @@ function text_bounding_box(label) {
 
 function tree_to_drawing_data(tree) {
     var text_box = text_bounding_box(tree.label);
-    console.log(text_box);
     var text_gap = text_box[0] > 0 ? TEXT_GAP : 0;
     var labeled_node_width = 2 * NODE_RADIUS + text_gap + text_box[0];
     var labeled_node_height = Math.max(2 * NODE_RADIUS, text_box[1]);

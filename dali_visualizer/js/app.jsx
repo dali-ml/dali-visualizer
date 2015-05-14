@@ -37,7 +37,6 @@ var DropDown = React.createClass({
         if (arguments.length > 0) {
             e.stopImmediatePropagation();
         }
-        console.log("toggled");
         if (this.state.active) {
             this.remove_background_callback();
         } else {
@@ -64,7 +63,6 @@ var DropDown = React.createClass({
                 current_active = op.name;
             }
             var cb = function (e) {
-                console.log("clicking dropdown");
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
                 this.choose_dropdown_item(op.name);
