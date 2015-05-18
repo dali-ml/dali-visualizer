@@ -327,8 +327,10 @@ var VisualizerFor = function (el) {
     }
 };
 
+var max_messages = 20;
+
 function prepend(list, el) {
-    return [el].concat(list.slice(0, 50));
+    return [el].concat(list.slice(0, max_messages));
 }
 
 var Notifications = React.createClass({
