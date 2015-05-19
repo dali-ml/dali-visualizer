@@ -50,4 +50,19 @@
 .sentence:hover {
   background: rgba(17, 146, 252, 0.1);
   cursor: pointer;
-};
+}
+
+.stacked_words {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
+
+.stacked_words > span {
+  float: left;
+  clear: left;
+}
+
+.stacked_words .lower {
+  font-size: 10px;
+}

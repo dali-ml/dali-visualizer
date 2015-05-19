@@ -11,8 +11,16 @@ var gTooltipOwner = null;
 
 var TooltipWord = React.createClass({
     mixins: [TooltipMixin],
+    getDefaultProps: function () {
+        return {
+            className: ""
+        }
+    },
     render: function () {
-        return <span style={this.props.style ? this.props.style : {}}>{this.props.children}</span>;
+        return <span className={this.props.className}
+                     style={this.props.style ? this.props.style : {}}>
+                     {this.props.children}
+                </span>;
     },
     tooltipContent: function () {
         return <div>{this.props.tooltip}</div>;

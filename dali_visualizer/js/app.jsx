@@ -312,6 +312,8 @@ var VisualizerFor = function (el) {
         return <FiniteDistribution distribution={el} />;
     } else if (el.type == "sentences") {
         return <Sentences sentences={el} />;
+    } else if (el.type == "parallel_sentence") {
+        return <ParallelSentence sentences={el} />
     } else if (el.type == "sentence") {
         return <Sentence sentence={el} />;
     } else if (el.type == "channel_switch") {
