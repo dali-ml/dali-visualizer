@@ -2,6 +2,7 @@ Dali Visualizer
 ===============
 
 ![Babi visual](readme_images/dali_visualizer_babi.alpha.png)
+<small>an LSTM responding to [bAbI project](https://research.facebook.com/researchers/1543934539189348) examples</small>
 
 Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/JonathanRaiman/recurrentjs). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
 
@@ -99,3 +100,34 @@ Forward the ports:
     sudo firewall-cmd --zone=FedoraServer --add-forward-port=port=80:proto=tcp:toport=8000
     sudo firewall-cmd --zone=FedoraServer --add-forward-port=port=6379:proto=tcp:toport=6379
 ```
+
+### Usage examples
+
+#### Named Entity Recognition
+
+![NER visual](readme_images/dali_visualizer_ner.alpha.png)
+<small>an [LSTM predicting Named Entities](https://github.com/JonathanRaiman/Dali/blob/master/examples/sparse_ner.cpp) in text</small>
+
+```cpp
+visualizer->throttled_feed(seconds(5), [&word_vocab, &label_vocab, &minibatch, &model]() {
+    // choose an example
+    auto example = std::get<0>(minibatch[utils::randint(0, minibatch.size()-1)]);
+    // predict the result
+    auto prediction = model.predict(example);
+    // convert the input from indices back to text
+    auto input_sentence = make_shared<visualizable::Sentence<float>>(word_vocab.decode(example));
+    // convert the prediction from indices to labels
+    auto decoded = label_vocab.decode(prediction);
+
+    // visualize text and labels as a "parallel sentence"
+    auto psentence = visualizable::ParallelSentence<REAL_t>(
+        input_sentence,
+        make_shared<visualizable::Sentence<REAL_t>>(decoded)
+    );
+    return psentence.to_json();
+});
+```
+
+#### Sentiment Analysis
+
+*Description Coming Soon*
