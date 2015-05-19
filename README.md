@@ -2,7 +2,6 @@ Dali Visualizer
 ===============
 
 ![Babi visual](readme_images/dali_visualizer_babi.alpha.png)
-<small>an LSTM responding to [bAbI project](https://research.facebook.com/researchers/1543934539189348) examples</small>
 
 Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/JonathanRaiman/recurrentjs). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
 
