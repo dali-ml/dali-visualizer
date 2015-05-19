@@ -7,24 +7,33 @@ Main server for Dali visualization
 see here for inspiration:
 http://blog.kristian.io/post/47460001334/sockjs-and-tornado-for-python-real-time-web-projects/
 """
-from dali_visualizer import RedisVisualizer
-from tooltip_jslib import check_and_download
 
-from sys import argv as ARGV
 import sys
 import os
+
 from os.path import join, dirname, abspath
 
+from dali_visualizer import RedisVisualizer
+from tooltip_jslib import check_and_download
+from dali_visualizer.utils import parse_args
+
 if __name__ == "__main__":
+    args = parse_args()
+    if args.debug:
+        print('Running a debug version')
 
     JS_DIR  = join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "js"), "vendor")
     CSS_DIR = join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "vendor")
     FONT_DIR = join(join(join(join(dirname(abspath(__file__)), "dali_visualizer"), "static"), "css"), "font")
 
+    if args.debug:
+        react_url = "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.js"
+    else:
+        react_url = "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.min.js"
     js_libs = [
         "http://darsain.github.io/tooltip/dist/tooltip.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react-with-addons.min.js",
+        react_url,
         "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"
     ]
 
@@ -60,8 +69,9 @@ if __name__ == "__main__":
     server = RedisVisualizer(
         socket_path = "/updates",
         websockets  = True,
-        exit_gracefully = True
+        exit_gracefully = True,
+        debug = args.debug
     )
     server.start(
-        port = 8000 if len(ARGV) < 2 else int(ARGV[1])
+        port = args.port
     )

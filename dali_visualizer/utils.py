@@ -1,3 +1,7 @@
+from sys import argv as ARGV
+
+import argparse
+
 redis_client = None
 
 def get_redis():
@@ -29,4 +33,12 @@ def init_redis(client):
     global redis_client
     redis_client = client
 
-__all__ = ["get_redis", "init_redis"]
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--port', type=int, default=8000, help='server port')
+    parser.add_argument('--debug', action='store_true', help='Run in debug mode.')
+    args = parser.parse_args()
+    return args
+
+
+__all__ = ["get_redis", "init_redis", "parse_args"]

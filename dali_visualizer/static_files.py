@@ -3,9 +3,10 @@ Expose to tornado the routes for loading JS, CSS, and HTML
 files from the static folder in this project.
 """
 import os
-from tornado.web import StaticFileHandler, RequestHandler, HTTPError
 import datetime
 import time
+
+from tornado.web import StaticFileHandler, RequestHandler, HTTPError
 from react.jsx import JSXTransformer, TransformError
 
 server_dir  = os.path.abspath(os.path.dirname(__file__))
@@ -20,8 +21,11 @@ class NoCacheStaticFileHandler(StaticFileHandler):
         return None
 
 class IndexHandler(RequestHandler):
+    def initialize(self, debug=False):
+        self.debug = debug
+
     def get(self):
-        self.render(index_route)
+        self.render(index_route, debug=self.debug)
 
 class ReactHandler(StaticFileHandler):
     def initialize(self, path):
@@ -35,7 +39,7 @@ class ReactHandler(StaticFileHandler):
         except Exception as e:
             raise HTTPError(500, "Could not transform %s into a JS file. %s" % (os.path.basename(abspath + "x"), str(e)))
 
-    def get(self, path):
+    def get(self, path, **kwargs):
         """
         Transform the JSX online as they change.
         """
@@ -65,17 +69,18 @@ class ReactHandler(StaticFileHandler):
         if not template_path:
             template_path = os.path.dirname(os.path.abspath(__file__))
         loader = RequestHandler._template_loaders[template_path]
-        self.render(abspath)
+        return super(ReactHandler, self).get(path, **kwargs)
 
     @classmethod
     def _get_cached_version(cls, abs_path):
         return None
 
-routes = [
-            (r"/", IndexHandler),
-            (r"/css/(.*)", NoCacheStaticFileHandler, {'path': os.path.join(server_dir, 'static/css/')}),
-            (r"/materialize/(.*)", StaticFileHandler, {'path': os.path.join(server_dir, 'static/materialize/')}),
-            (r"/js/(.*)", ReactHandler, {'path': os.path.join(server_dir, 'js/')})
-        ]
+def generate_routes(debug=False):
+    return [
+        (r"/", IndexHandler, {'debug': debug}),
+        (r"/css/(.*)", NoCacheStaticFileHandler, {'path': os.path.join(server_dir, 'static/css/')}),
+        (r"/materialize/(.*)", StaticFileHandler, {'path': os.path.join(server_dir, 'static/materialize/')}),
+        (r"/js/(.*)", ReactHandler, {'path': os.path.join(server_dir, 'js/')})
+    ]
 
-__all__ = ["routes"]
+__all__ = ["generate_routes"]

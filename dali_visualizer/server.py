@@ -7,7 +7,7 @@ import signal
 from sockjs.tornado     import SockJSRouter
 from .utils             import get_redis, init_redis
 from .socket_connection import Connection
-from .static_files      import routes as StaticRoutes
+from .static_files      import generate_routes
 
 server_dir  = os.path.abspath(os.path.dirname(__file__))
 index_route = os.path.join(server_dir, 'static/html/index.html')
@@ -36,12 +36,13 @@ class RedisVisualizer(object):
     on the '/' route.
     """
     def __init__(self,
-            socket_path   = "/updates",
-            websockets    = True,
-            subscriptions =  None,
-            redis_host    = "127.0.0.1",
-            redis_port    = 6379,
-            exit_gracefully = True):
+            socket_path     = "/updates",
+            websockets      = True,
+            subscriptions   =  None,
+            redis_host      = "127.0.0.1",
+            redis_port      = 6379,
+            exit_gracefully = True,
+            debug           = False):
         """
         RedisVisualization server. Servers updates from redis using websockets
         and also provide static files using Tornado.
@@ -84,7 +85,7 @@ class RedisVisualizer(object):
         else:
             Router = SockJSRouter(Connection, socket_path)
         # 4. Creater router for http + sockets:
-        self.App = tornado.web.Application(StaticRoutes + Router.urls)
+        self.App = tornado.web.Application(generate_routes(debug) + Router.urls)
 
 
     def start(self, port):
