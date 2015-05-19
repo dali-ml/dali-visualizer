@@ -53,7 +53,11 @@ if __name__ == "__main__":
         ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-regular-webfont.woff", "roboto/Roboto-Regular.woff"),
         ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-regular-webfont.ttf", "roboto/Roboto-Regular.ttf"),
         ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-bold-webfont.woff", "roboto/Roboto-Bold.woff"),
-        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-bold-webfont.ttf", "roboto/Roboto-Bold.ttf")
+        ("https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.7/fonts/Roboto/roboto-bold-webfont.ttf", "roboto/Roboto-Bold.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/font/material-design-icons/Material-Design-Icons.ttf",
+                "material-design-icons/Material-Design-Icons.ttf"),
+        ("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/font/material-design-icons/Material-Design-Icons.woff",
+                "material-design-icons/Material-Design-Icons.woff"),
     ]
 
     got_js  = all([check_and_download(url, JS_DIR) for url in js_libs])

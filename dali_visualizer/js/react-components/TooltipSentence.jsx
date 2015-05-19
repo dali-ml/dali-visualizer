@@ -3,7 +3,7 @@
 */
 
 var TooltipSentence = React.createClass({
-    mixins: [Tooltip, React.addons.PureRenderMixin],
+    mixins: [TooltipMixin, React.addons.PureRenderMixin],
     render: function () {
         return <div className="sentence">
                     <Sentence color={this.props.color}

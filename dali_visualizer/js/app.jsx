@@ -79,7 +79,7 @@ var DropDown = React.createClass({
                 <a className="dropdown-button"
                    href="#!"
                    onClick={this.dropdown_click}>
-                    {current_active}<i class="mdi-navigation-arrow-drop-down right"></i>
+                    {current_active}<i className="mdi-navigation-arrow-drop-down right"></i>
                 </a>
                 <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
                     {options}
@@ -204,7 +204,7 @@ var FiniteDistribution = React.createClass({
                 var label = labels[idx] + ": " + percent + '%';
             }
             boxes.push(
-                <div className="tank">
+                <div className="tank" key={'b_' + idx}>
                     <div className="liquid" style={liquid_style} />
                     <div className="label">
                         {label}
@@ -226,17 +226,17 @@ var GridLayout = React.createClass({
         var column_els = [];
         var cells = Math.max(Math.round(12 / (this.props.length)), 1);
 
-        this.props.grid.forEach(function(column) {
+        this.props.grid.forEach(function(column, column_idx) {
             var column_contents = [];
-            column.forEach(function(contents) {
+            column.forEach(function(contents, contents_idx) {
                 column_contents.push(
-                    <div>
+                    <div key={'contents_' + contents_idx}>
                         {VisualizerFor(contents)}
                     </div>
                 );
             });
             column_els.push(
-                <div className={"col s12 m" + cells + " valign nanopadding"}>
+                <div className={"col s12 m" + cells + " valign nanopadding"} key={'col_el_' + column_idx}>
                     <div className="card feed-elem">
                         {column_contents}
                     </div>
@@ -509,7 +509,5 @@ var VisualizationServer = React.createClass({
 
 React.initializeTouchEvents(true);
 React.render(
-    React.createElement(VisualizationServer, {
-        url:"http://"+window.location.host+"/updates"
-    }), document.body
+    <VisualizationServer url={"http://"+window.location.host+"/updates"} />, document.body
 );
