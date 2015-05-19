@@ -3,6 +3,7 @@
 */
 
 var Sentence = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     getDefaultProps: function () {
         return {
             normalize_weights: false,

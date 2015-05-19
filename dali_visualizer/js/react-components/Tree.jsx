@@ -102,6 +102,7 @@ function drawing_data_to_svg(drawing_data, offset_x, offset_y) {
 }
 
 var OutputTree = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function () {
         var drawing_data = tree_to_drawing_data(this.props.tree);
         var tree_as_svg = drawing_data_to_svg(drawing_data, 0, 0);

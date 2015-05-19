@@ -10,7 +10,7 @@ gTooltip.type('none').effect('fade');
 var gTooltipOwner = null;
 
 var TooltipWord = React.createClass({
-    mixins: [TooltipMixin],
+    mixins: [TooltipMixin, React.addons.PureRenderMixin],
     getDefaultProps: function () {
         return {
             className: ""

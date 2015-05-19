@@ -17,6 +17,7 @@ var ExpiredChannel = function (expired_channel) {
 };
 
 var DropDown = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     getInitialState: function () {
         return {
             active: false
@@ -152,6 +153,7 @@ var Sentences = React.createClass({
 });
 
 var QA = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function () {
         return (
             <div>
@@ -174,6 +176,7 @@ var QA = React.createClass({
 });
 
 var FiniteDistribution = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     getInitialState: function() {
         return {'attached': false};
     },
@@ -218,7 +221,7 @@ var FiniteDistribution = React.createClass({
 });
 
 var GridLayout = React.createClass({
-
+    mixins: [React.addons.PureRenderMixin],
     render: function () {
         var column_els = [];
         var cells = Math.max(Math.round(12 / (this.props.length)), 1);
@@ -263,7 +266,7 @@ var ChannelSwitch = React.createClass({
 
 
 var Probability = React.createClass({
-    mixins: [TooltipMixin],
+    mixins: [TooltipMixin, React.addons.PureRenderMixin],
     tooltipContent: function () {
         var percent = Math.round(100*this.props.probability);
 
@@ -293,6 +296,7 @@ var Probability = React.createClass({
 });
 
 var ChannelExpiration = React.createClass({
+    mixins: [React.addons.PureRenderMixin],
     render: function () {
         return (
             <div className="card-panel">
