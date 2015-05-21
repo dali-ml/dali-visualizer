@@ -16,7 +16,8 @@ var ParallelSentence = React.createClass({
                 sentence2: {
                     words: [],
                     weights: []
-                }
+                },
+                spaces: true
             }
         };
     },
@@ -35,10 +36,10 @@ var ParallelSentence = React.createClass({
             return (
                 <TooltipWord style={word_style}
                              className={className}
-                             tooltip={tooltip_els}>{words[idx]}
+                             tooltip={tooltip_els}>{words[idx] === " " ? " " : words[idx]}
                 </TooltipWord>);
         } else {
-            return <span className={className}>{words[idx]}</span>;
+            return <span className={className}>{words[idx] === " " ? " " : words[idx]}</span>;
         }
     },
     render: function () {
@@ -59,7 +60,10 @@ var ParallelSentence = React.createClass({
             var word1_el = this.create_word_element(words1, weights1, idx, "upper"),
                 word2_el = this.create_word_element(words2, weights2, idx, "lower");
             words_elt.push(<span className="stacked_words">{word1_el}{word2_el}</span>);
-            words_elt.push(<span>{" "}</span>);
+
+            if (this.props.sentences.spaces === undefined || this.props.sentences.spaces == true) {
+                words_elt.push(<span>{" "}</span>);
+            }
         }
 
         return (

@@ -10,7 +10,8 @@ var Sentence = React.createClass({
             color: "black",
             sentence: {
                 words: [],
-                weights: []
+                weights: [],
+                spaces: true
             }
         };
     },
@@ -35,12 +36,14 @@ var Sentence = React.createClass({
                 words_elt.push(
                     <TooltipWord style={word_style}
                                  key={"w_"+ (widx++)}
-                                 tooltip={tooltip_els}>{words[idx]}
+                                 tooltip={tooltip_els}>{words[idx] === " " ? " " : words[idx]}
                     </TooltipWord>);
             } else {
-                words_elt.push(<span key={"w_"+ (widx++)}>{words[idx]}</span>);
+                words_elt.push(<span key={"w_"+ (widx++)}>{words[idx] === " " ? " " : words[idx]}</span>);
             }
-            words_elt.push(<span key={"w_"+ (widx++)}>{" "}</span>);
+            if (this.props.sentence.spaces === undefined || this.props.sentence.spaces == true) {
+                words_elt.push(<span key={"w_"+ (widx++)}>{" "}</span>);
+            }
         }
 
 
