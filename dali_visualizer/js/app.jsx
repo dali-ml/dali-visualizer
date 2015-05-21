@@ -328,6 +328,8 @@ var VisualizerFor = function (el) {
         return <OutputTree tree={el}/>;
     } else if (el.type == "probability") {
         return <Probability probability={el.probability} />;
+    } else if (el.type == "message") {
+        return <Message message={el} />;
     } else {
         return el;
     }
