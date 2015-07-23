@@ -61,7 +61,7 @@ class RedisVisualizer(object):
         """
         self.exit_gracefully = exit_gracefully
         if subscriptions is None:
-            subscriptions = ["updates_*", "__keyspace@0__:namespace_*"]
+            subscriptions = ["updates_*"]
         # 2. Start a connection pool to redis:
         pool = tornadoredis.ConnectionPool(host=redis_host, port=redis_port)
         self.clients = tornadoredis.Client(connection_pool=pool, password="")
