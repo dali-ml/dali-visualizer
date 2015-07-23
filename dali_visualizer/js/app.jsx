@@ -372,6 +372,7 @@ var VisualizationServer = React.createClass({
         this.socket.onmessage = this.onMessage.bind(this);
     },
     onMessage: function (event) {
+        console.log(event);
         if (event.data.type == 'pick_channel') {
             // what channel do you want?
             var new_messages = this.state.messages,

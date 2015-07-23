@@ -2,6 +2,7 @@ from sockjs.tornado import SockJSConnection
 import json
 import tornado.web
 import tornado.gen
+from update_processor import get_up
 from .utils import get_redis
 
 class Connection(SockJSConnection):
@@ -34,10 +35,9 @@ class Connection(SockJSConnection):
         self.authenticated = True
         self.channel = None
         # choose the channel
-        available_channels = yield tornado.gen.Task(get_redis().keys, "namespace_*")
         self.send_message(
             {
-                "available_channels": [ch.replace("namespace_", "updates_") for ch in available_channels] # available channels
+                "available_channels": get_up().available_channels()
             },
             'pick_channel' # what to name the channel
         )

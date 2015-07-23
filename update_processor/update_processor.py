@@ -9,6 +9,10 @@ class UpdateProcessor(object):
         self.p = None
         self.uuid_to_name = {}
 
+    def available_channels():
+        print (self.uuid_to_name)
+        return self.uuid_to_name
+
     def run(self):
         self.p = self.r.pubsub()
         self.p.psubscribe('updates_*')
@@ -50,3 +54,12 @@ class UpdateProcessor(object):
         t.setDaemon(True)
         t.start()
         return t
+
+
+instance = [None]
+
+def initialize_up(redis):
+    instance[0] = UpdateProcessor(redis)
+
+def get_up():
+    return instance[0]

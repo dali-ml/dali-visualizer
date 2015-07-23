@@ -15,7 +15,7 @@ from os.path import join, dirname, abspath
 from redis import StrictRedis
 
 from dali_visualizer.utils import parse_args
-from update_processor import UpdateProcessor
+from update_processor import initialize_up, get_up
 from dali_visualizer import RedisVisualizer
 from tooltip_jslib import check_and_download
 
@@ -83,8 +83,8 @@ if __name__ == "__main__":
     )
 
     redis = StrictRedis(args.redis_host, args.redis_port)
-    up = UpdateProcessor(redis)
-    up.run_in_a_thread()
+    initialize_up(redis)
+    get_up().run_in_a_thread()
 
     server.start(
         port = args.port
