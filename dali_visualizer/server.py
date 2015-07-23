@@ -4,7 +4,9 @@ import tornado
 import logging
 import tornadoredis
 import signal
+
 from sockjs.tornado     import SockJSRouter
+
 from .utils             import get_redis, init_redis
 from .socket_connection import Connection
 from .static_files      import generate_routes
@@ -51,7 +53,7 @@ class RedisVisualizer(object):
         ------
         @socket_path         str : where should client ask for redis updates (default = '/updates')
         @websockets         bool : use websockets ? (default = True)
-        @subscriptions list<str> : what to subscribe to on Redis (default=['namespace_*', 'feed_*'])
+        @subscriptions list<str> : what to subscribe to on Redis (default=['namespace_*', 'updates_*'])
         @redis_host          str : what hostname is redis server on (default='127.0.0.1')
         @redis_port          int : what port to listen to for redis server (default=6379)
         @exit_gracefully    bool : capture SIGINT event & shut down server from ioloop (default=True)
@@ -59,7 +61,7 @@ class RedisVisualizer(object):
         """
         self.exit_gracefully = exit_gracefully
         if subscriptions is None:
-            subscriptions = ["feed_*", "__keyspace@0__:namespace_*"]
+            subscriptions = ["updates_*", "__keyspace@0__:namespace_*"]
         # 2. Start a connection pool to redis:
         pool = tornadoredis.ConnectionPool(host=redis_host, port=redis_port)
         self.clients = tornadoredis.Client(connection_pool=pool, password="")

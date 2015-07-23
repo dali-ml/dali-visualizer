@@ -388,7 +388,7 @@ var VisualizationServer = React.createClass({
             });
         } else if (event.data.type == 'keyspace_event') {
             // notice something is happening to the keyspace
-            var channel_evoked = "feed_" + event.data.data.channel.split("namespace_")[1];
+            var channel_evoked = "updates_" + event.data.data.channel.split("namespace_")[1];
             var action = event.data.data.message.toLowerCase();
 
             if (action == "set") {
@@ -476,7 +476,7 @@ var VisualizationServer = React.createClass({
                     <pre style={{"textAlign": "left"}}>{
                         '\n' +
                         'SET namespace_experiment 1 EX 5\n' +
-                        'PUBLISH feed_experiment \'{\n' +
+                        'PUBLISH update_experiment \'{\n' +
                         '    "type":"classifier_example",\n' +
                         '    "input": {\n' +
                         '        "type": "sentence",\n' +

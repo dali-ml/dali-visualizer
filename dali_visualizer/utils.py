@@ -37,6 +37,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--port', type=int, default=8000, help='server port')
     parser.add_argument('--debug', action='store_true', help='Run in debug mode.')
+    parser.add_argument('--redis_host', type=str, default="127.0.0.1", help='Which host to use to connect to redis.')
+    parser.add_argument('--redis_port', type=int, default=6379,        help='Which port to use to connect to redis.')
     args = parser.parse_args()
     return args
 

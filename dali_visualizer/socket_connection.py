@@ -37,7 +37,7 @@ class Connection(SockJSConnection):
         available_channels = yield tornado.gen.Task(get_redis().keys, "namespace_*")
         self.send_message(
             {
-                "available_channels": [ch.replace("namespace_", "feed_") for ch in available_channels] # available channels
+                "available_channels": [ch.replace("namespace_", "updates_") for ch in available_channels] # available channels
             },
             'pick_channel' # what to name the channel
         )

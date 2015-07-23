@@ -12,10 +12,12 @@ import sys
 import os
 
 from os.path import join, dirname, abspath
+from redis import StrictRedis
 
+from dali_visualizer.utils import parse_args
+from update_processor import UpdateProcessor
 from dali_visualizer import RedisVisualizer
 from tooltip_jslib import check_and_download
-from dali_visualizer.utils import parse_args
 
 if __name__ == "__main__":
     args = parse_args()
@@ -64,6 +66,7 @@ if __name__ == "__main__":
     got_css = all([check_and_download(url, CSS_DIR) for url in css_libs])
     got_fonts = all([check_and_download(url, FONT_DIR) for url in font_libs])
 
+
     if not got_js or not got_css or not got_fonts:
         print("""
             Could not download Javascript, CSS, and Font support files.
@@ -74,8 +77,15 @@ if __name__ == "__main__":
         socket_path = "/updates",
         websockets  = True,
         exit_gracefully = True,
+        redis_host      = args.redis_host,
+        redis_port      = args.redis_port,
         debug = args.debug
     )
+
+    redis = StrictRedis(args.redis_host, args.redis_port)
+    up = UpdateProcessor(redis)
+    up.run_in_a_thread()
+
     server.start(
         port = args.port
     )
