@@ -22,7 +22,6 @@ class Connection(SockJSConnection):
         """
         Standard format for all messages
         """
-        print (message)
         return self.send(json.dumps({
             'type': data_type,
             'data': message
@@ -82,7 +81,11 @@ class Connection(SockJSConnection):
             print('WARNING: exception json parsing incoming update: ', e)
             return
 
+        if data_type == 'heartbeat':
+            # only used by server - do not pass to website
+            return
+
         for client in cls.clients:
-            if client.authenticated and client.experiment_uuid == msg.channel:
+            if client.authenticated and client.experiment_uuid == experiment_uuid:
                 # here is what redis sends
                 client.send(msg.body)

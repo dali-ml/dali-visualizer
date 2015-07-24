@@ -4,9 +4,9 @@ var SocketConnection = function (url, auth_json) {
         this.socket.send(JSON.stringify(auth_json));
     }.bind(this);
 
-    this.subscribe_to = function (channel) {
+    this.subscribe_to = function (experiment_uuid) {
         this.socket.send(JSON.stringify({
-            channel: channel
+            experiment_uuid: experiment_uuid
         }));
     }
 

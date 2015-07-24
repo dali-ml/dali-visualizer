@@ -333,6 +333,8 @@ var VisualizerFor = function (el) {
         return <Probability probability={el.probability} />;
     } else if (el.type == "message") {
         return <Message message={el} />;
+    } else if (el.type == "heartbeat") {
+        return null
     } else {
         return el;
     }

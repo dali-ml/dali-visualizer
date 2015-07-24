@@ -46,7 +46,6 @@ class UpdateProcessor(object):
 
                 if experiment_uid == '*':
                     continue
-                print ('Update from', experiment_uid)
 
                 experiment_data = self.experiments[experiment_uid]
                 experiment_data['last_heartbeat'] = datetime.datetime.now()
@@ -61,7 +60,6 @@ class UpdateProcessor(object):
                 if 'type' in data:
                     if data['type'] == 'whoami':
                         name = data['name']
-                        print ("experiment discovered: ", name);
                         self.experiments[experiment_uid]['name'] =  name
                         Connection.announance_new_experiments(self.available_channels())
 
