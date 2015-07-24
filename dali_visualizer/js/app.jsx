@@ -15,6 +15,30 @@ var ExpiredChannel = function (expired_channel) {
     };
 };
 
+var TimeSince = React.createClass({
+    getInitialState : function() {
+        return {
+            time : ""
+        }
+    },
+    tick: function() {
+        var desc = moment(this.props.since).fromNow();
+        this.setState({
+            time: " (" + desc + ")"
+        });
+    },
+    componentDidMount: function() {
+        this.interval = setInterval(this.tick, 1000);
+    },
+    componentWillUnmount: function() {
+        clearInterval(this.interval);
+    },
+    render: function() {
+        return <span>{this.state.time}</span>
+    }
+});
+
+
 var DropDown = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     getInitialState: function () {
@@ -76,9 +100,19 @@ var DropDown = React.createClass({
             }.bind(this);
             var op_url = '#' + op.value;
             console.log(op_url);
+            var time_since = "";
+            if (op.time_since !== undefined) {
+                time_since = (
+                    <TimeSince since={op.time_since} />
+                );
+            }
+
             return (
                 <li key={"op_" + i} onClick={cb}>
-                    <a href={op_url} className={op.active ? "active" : ""}>{op.name}</a>
+                    <a href={op_url} className={op.active ? "active" : ""}>
+                        {op.name}
+                        {time_since}
+                    </a>
                 </li>
             );
         }.bind(this));
@@ -87,7 +121,8 @@ var DropDown = React.createClass({
                 <a className="dropdown-button"
                    href={current_active_url}
                    onClick={this.dropdown_click}>
-                    {current_active}<i className="mdi-navigation-arrow-drop-down right"></i>
+                    {current_active}
+                    <i className="mdi-navigation-arrow-drop-down right"></i>
                 </a>
                 <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
                     {options}
@@ -449,9 +484,12 @@ var VisualizationServer = React.createClass({
     render: function () {
         var current_channel = this.state.channel;
         var options = this.state.available_channels.map( function (experiment, k) {
+            var offset = new Date().getTimezoneOffset() * 60000;
+            var created_local_tz = new Date(parseInt(experiment.created * 1000) + offset);
             return {
                 name:  experiment.name,
                 value: experiment.uuid,
+                time_since: created_local_tz,
                 active: current_channel == experiment.uuid
             }
         });

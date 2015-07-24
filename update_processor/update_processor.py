@@ -2,6 +2,7 @@ import datetime
 import json
 import sched
 import time
+import pytz
 
 from collections import defaultdict
 from threading import Thread
@@ -20,8 +21,15 @@ class UpdateProcessor(object):
         res = []
         for uuid, experiment in self.experiments.items():
             name = experiment.get('name')
+
             if name is not None:
-                res.append({'name' : name, 'uuid' : uuid})
+                creation_ts_utc = experiment.get('created') \
+                        .replace(tzinfo=pytz.UTC).timestamp()
+                res.append({
+                    'name' : name,
+                    'created' : creation_ts_utc,
+                    'uuid' : uuid
+                })
         return res
 
     def maybe_expire_expriment(self, uuid):
@@ -59,8 +67,11 @@ class UpdateProcessor(object):
 
                 if 'type' in data:
                     if data['type'] == 'whoami':
+                        exp = self.experiments[experiment_uid];
                         name = data['name']
-                        self.experiments[experiment_uid]['name'] =  name
+                        exp['name'] =  name
+                        if 'created' not in exp:
+                            exp['created'] = datetime.datetime.now()
                         Connection.announance_new_experiments(self.available_channels())
 
                 # ask new experiment for introduction
