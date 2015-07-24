@@ -12,7 +12,6 @@ var NewChannel = function (new_channel) {
 var ExpiredChannel = function (expired_channel) {
     return {
          type: "channel_expired",
-         data: expired_channel
     };
 };
 
@@ -50,7 +49,11 @@ var DropDown = React.createClass({
     },
     choose_dropdown_item: function (option) {
         this.toggleDropDown();
-        this.props.onChange(option);
+        if (option.value !== undefined) {
+            this.props.onChange(option.name, option.value);
+        } else {
+            this.props.onChange(option.name);
+        }
     },
     dropdown_click: function (e) {
         e.stopPropagation();
@@ -66,7 +69,7 @@ var DropDown = React.createClass({
             var cb = function (e) {
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
-                this.choose_dropdown_item(op.name);
+                this.choose_dropdown_item(op);
             }.bind(this);
             return (
                 <li key={"op_" + i} onClick={cb}>
@@ -300,7 +303,7 @@ var ChannelExpiration = React.createClass({
     render: function () {
         return (
             <div className="card-panel">
-                disconnected from channel <strong>{this.props.channel.data}</strong>.
+                disconnected from current channel.
             </div>
         );
     }
@@ -373,19 +376,35 @@ var VisualizationServer = React.createClass({
     },
     onMessage: function (event) {
         console.log(event);
-        if (event.data.type == 'pick_channel') {
+        if (event.data.type == 'experiments_list_update') {
             // what channel do you want?
             var new_messages = this.state.messages,
                 new_channel  = this.state.channel;
-            if (event.data.data.available_experiments.length > 0) {
-                new_channel  = event.data.data.available_experiments[0];
-                new_messages = prepend(new_messages, NewChannel(new_channel));
-            } else {
-                new_channel = null;
-                if (this.state.channel !== null) {
-                    new_messages = prepend(new_messages, ExpiredChannel(this.state.channel));
+
+            if (this.state.channel !== null) {
+                current_channel_still_available = false;
+                event.data.data.available_experiments.forEach(function(exp) {
+                    if (exp.uuid === new_channel) {
+                        current_channel_still_available = true;
+                    }
+                });
+
+                if (!current_channel_still_available) {
+                    new_channel = null;
+                    if (this.state.channel !== null) {
+                        new_messages = prepend(new_messages,
+                                ExpiredChannel());
+                    }
                 }
             }
+
+            if (event.data.data.available_experiments.length > 0 &&
+                    new_channel === null) {
+                new_channel  = event.data.data.available_experiments[0].uuid;
+                new_channel_name  = event.data.data.available_experiments[0].name;
+                new_messages = prepend(new_messages, NewChannel(new_channel_name));
+            }
+
             this.setState({
                 channel: new_channel,
                 // got available channels from pick_channel message
@@ -405,20 +424,21 @@ var VisualizationServer = React.createClass({
             );
         }
     },
-    onChangeSubscription: function (new_channel) {
+    onChangeSubscription: function (name, new_channel) {
         if (new_channel != this.state.channel) {
             this.setState({
                 channel: new_channel,
-                messages: prepend(this.state.messages, NewChannel(new_channel))
+                messages: prepend(this.state.messages, NewChannel(name))
             });
         }
     },
     render: function () {
         var current_channel = this.state.channel;
-        var options = this.state.available_channels.map( function (opt, k) {
+        var options = this.state.available_channels.map( function (experiment, k) {
             return {
-                name: opt,
-                active: current_channel == opt
+                name:  experiment.name,
+                value: experiment.uuid,
+                active: current_channel == experiment.uuid
             }
         });
         var no_available_channels = "";

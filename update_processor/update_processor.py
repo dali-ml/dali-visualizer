@@ -17,12 +17,12 @@ class UpdateProcessor(object):
         self.events = sched.scheduler()
 
     def available_channels(self):
-        res = {}
+        res = []
         for uuid, experiment in self.experiments.items():
             name = experiment.get('name')
             if name is not None:
-                res[uuid] = name
-        return list(res.keys())
+                res.append({'name' : name, 'uuid' : uuid})
+        return res
 
     def maybe_expire_expriment(self, uuid):
         now = datetime.datetime.now()

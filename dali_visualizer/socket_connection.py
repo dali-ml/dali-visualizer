@@ -33,7 +33,7 @@ class Connection(SockJSConnection):
             {
                 "available_experiments": Connection.available_experiments
             },
-            'pick_channel' # what to name the channel
+            'experiments_list_update' # what to name the channel
         )
 
     @tornado.gen.coroutine
@@ -46,8 +46,6 @@ class Connection(SockJSConnection):
         # choose the channel
         self.on_experiments_updated()
         self.clients.add(self)
-
-
 
     def on_message(self, msg):
         # For every incoming message, broadcast it to all clients
