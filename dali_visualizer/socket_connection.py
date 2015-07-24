@@ -2,11 +2,11 @@ from sockjs.tornado import SockJSConnection
 import json
 import tornado.web
 import tornado.gen
-from update_processor import get_up
 from .utils import get_redis
 
 class Connection(SockJSConnection):
     clients = set()
+    available_experiments = {}
     def send_error(self, message, error_type=None):
         """
         Standard format for all errors
@@ -22,10 +22,19 @@ class Connection(SockJSConnection):
         """
         Standard format for all messages
         """
+        print (message)
         return self.send(json.dumps({
             'type': data_type,
             'data': message
         }))
+
+    def on_experiments_updated(self):
+        self.send_message(
+            {
+                "available_experiments": Connection.available_experiments
+            },
+            'pick_channel' # what to name the channel
+        )
 
     @tornado.gen.coroutine
     def on_open(self, request):
@@ -33,24 +42,21 @@ class Connection(SockJSConnection):
         Choose what model updates to listen to in visualizer:
         """
         self.authenticated = True
-        self.channel = None
+        self.experiment_uuid = None
         # choose the channel
-        self.send_message(
-            {
-                "available_channels": get_up().available_channels()
-            },
-            'pick_channel' # what to name the channel
-        )
+        self.on_experiments_updated()
         self.clients.add(self)
+
+
 
     def on_message(self, msg):
         # For every incoming message, broadcast it to all clients
         # self.broadcast(self.clients, msg)
         if len(msg) > 2:
             json_msg = json.loads(msg)
-            if "channel" in json_msg:
+            if "experiment_uuid" in json_msg:
                 # new participant to this channel:
-                self.channel = json_msg["channel"]
+                self.experiment_uuid = json_msg["experiment_uuid"]
         else:
             pass
 
@@ -59,20 +65,26 @@ class Connection(SockJSConnection):
         self.clients.remove(self)
 
     @classmethod
+    def announance_new_experiments(cls, experiments):
+        Connection.available_experiments = experiments
+        for client in cls.clients:
+            if client.authenticated:
+                client.on_experiments_updated()
+
+    @classmethod
     def pubsub_message(cls, msg):
-        if msg.channel.startswith('__keyspace@'):
-            for client in cls.clients:
-                if client.authenticated:
-                    # report change in keyspace
-                    client.send(json.dumps({
-                        'type': 'keyspace_event',
-                        'data': {
-                            "message": msg.body,
-                            "channel": msg.channel
-                        }
-                    }))
-        else:
-            for client in cls.clients:
-                if client.authenticated and client.channel == msg.channel:
-                    # here is what redis sends
-                    client.send(msg.body)
+        PREFIX = 'updates_'
+        if not msg.channel.startswith(PREFIX) or msg.kind == 'psubscribe':
+            return
+        try:
+            experiment_uuid = msg.channel[len(PREFIX):]
+            data = json.loads(msg.body)
+            data_type = data["type"]
+        except Exception as e:
+            print('WARNING: exception json parsing incoming update: ', e)
+            return
+
+        for client in cls.clients:
+            if client.authenticated and client.experiment_uuid == msg.channel:
+                # here is what redis sends
+                client.send(msg.body)

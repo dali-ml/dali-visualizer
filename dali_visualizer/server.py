@@ -72,8 +72,6 @@ class RedisVisualizer(object):
         get_redis().connect()
         # make sure redis reports expiration and set events:
         try:
-            get_redis().execute_command('config', 'set', 'notify-keyspace-events', 'AKE')
-            # 3. listen to events on feed_*, namespace_*
             self.clients.psubscribe( subscriptions, lambda msg: self.clients.listen(Connection.pubsub_message))
         except tornadoredis.exceptions.ConnectionError:
             print("""

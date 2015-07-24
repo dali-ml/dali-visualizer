@@ -1,19 +1,37 @@
+import datetime
 import json
+import sched
 import time
 
+from collections import defaultdict
 from threading import Thread
+
+from dali_visualizer.socket_connection import Connection
+
 
 class UpdateProcessor(object):
     def __init__(self, redis):
         self.r = redis
         self.p = None
-        self.uuid_to_name = {}
+        self.experiments = defaultdict(lambda: {})
+        self.events = sched.scheduler()
 
-    def available_channels():
-        print (self.uuid_to_name)
-        return self.uuid_to_name
+    def available_channels(self):
+        res = {}
+        for uuid, experiment in self.experiments.items():
+            name = experiment.get('name')
+            if name is not None:
+                res[uuid] = name
+        return list(res.keys())
 
-    def run(self):
+    def maybe_expire_expriment(self, uuid):
+        now = datetime.datetime.now()
+        last_heartbeat = self.experiments[uuid]['last_heartbeat']
+        if now - last_heartbeat > datetime.timedelta(seconds = 1.9):
+            del self.experiments[uuid]
+            Connection.announance_new_experiments(self.available_channels())
+
+    def run_message_processor(self):
         self.p = self.r.pubsub()
         self.p.psubscribe('updates_*')
         while True:
@@ -30,6 +48,10 @@ class UpdateProcessor(object):
                     continue
                 print ('Update from', experiment_uid)
 
+                experiment_data = self.experiments[experiment_uid]
+                experiment_data['last_heartbeat'] = datetime.datetime.now()
+                self.events.enter(2, 2, self.maybe_expire_expriment, (experiment_uid,))
+
                 try:
                     data = json.loads(data.decode('utf-8'))
                 except Exception as e:
@@ -40,21 +62,28 @@ class UpdateProcessor(object):
                     if data['type'] == 'whoami':
                         name = data['name']
                         print ("experiment discovered: ", name);
-                        self.uuid_to_name[experiment_uid] = name
+                        self.experiments[experiment_uid]['name'] =  name
+                        Connection.announance_new_experiments(self.available_channels())
 
                 # ask new experiment for introduction
-                if self.uuid_to_name.get(experiment_uid) is None:
+                if 'name' not in self.experiments.get(experiment_uid):
                     self.r.publish("callcenter_" + experiment_uid, json.dumps({ 'name': 'whoami'}))
-
 
             time.sleep(0.01)
 
+    def run_event_queue(self):
+        while True:
+            time.sleep(0.01)
+            self.events.run()
+
+
     def run_in_a_thread(self):
-        t = Thread(target=self.run)
+        t = Thread(target=self.run_message_processor)
         t.setDaemon(True)
         t.start()
-        return t
-
+        eq = Thread(target=self.run_event_queue)
+        eq.setDaemon(True)
+        eq.start()
 
 instance = [None]
 

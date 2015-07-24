@@ -324,13 +324,13 @@ var VisualizerFor = function (el) {
         return <ChannelSwitch channel={el}/>;
     } else if (el.type == "channel_expired") {
         return <ChannelExpiration channel={el}/>;
-    } else if (el.type == "tree") {
+    } else if (el.type == "tree") {
         return <OutputTree tree={el}/>;
     } else if (el.type == "probability") {
         return <Probability probability={el.probability} />;
     } else if (el.type == "message") {
         return <Message message={el} />;
-    } else {
+    } else {
         return el;
     }
 };
@@ -376,69 +376,23 @@ var VisualizationServer = React.createClass({
         if (event.data.type == 'pick_channel') {
             // what channel do you want?
             var new_messages = this.state.messages,
-                new_channel  = null;
-            if (event.data.data.available_channels.length > 0) {
-                new_channel  = event.data.data.available_channels[0];
+                new_channel  = this.state.channel;
+            if (event.data.data.available_experiments.length > 0) {
+                new_channel  = event.data.data.available_experiments[0];
                 new_messages = prepend(new_messages, NewChannel(new_channel));
+            } else {
+                new_channel = null;
+                if (this.state.channel !== null) {
+                    new_messages = prepend(new_messages, ExpiredChannel(this.state.channel));
+                }
             }
             this.setState({
                 channel: new_channel,
                 // got available channels from pick_channel message
-                available_channels: event.data.data.available_channels,
+                available_channels: event.data.data.available_experiments,
                 messages: new_messages
             });
-        } else if (event.data.type == 'keyspace_event') {
-            // notice something is happening to the keyspace
-            var channel_evoked = "updates_" + event.data.data.channel.split("namespace_")[1];
-            var action = event.data.data.message.toLowerCase();
-
-            if (action == "set") {
-                var available_channels = this.state.available_channels;
-                if (this.state.available_channels.indexOf(channel_evoked) == -1) {
-                    available_channels = available_channels.concat([channel_evoked]);
-                }
-                if (this.state.channel === null) {
-                    var new_messages = prepend(
-                        this.state.messages,
-                        NewChannel(channel_evoked)
-                    );
-                    this.setState({
-                        channel: channel_evoked,
-                        available_channels: available_channels,
-                        messages: new_messages
-                    });
-                } else {
-                    // just add the new channel
-                    this.setState({
-                        available_channels: available_channels
-                    });
-                }
-            } else if (action == "expired" || action == "del") {
-                var index_of_expired_channel = this.state.available_channels.indexOf(channel_evoked);
-                if (index_of_expired_channel != -1) {
-                    var available_channels = this.state.available_channels.slice(0);
-                    available_channels.splice(
-                        index_of_expired_channel,
-                        1
-                    );
-
-                    // mark the channel as expired
-                    if (this.state.channel == channel_evoked) {
-                        this.setState({
-                            channel: null,
-                            available_channels: available_channels,
-                            messages: prepend(this.state.messages, ExpiredChannel(channel_evoked))
-                        });
-                    } else {
-                        this.setState({
-                            available_channels: available_channels
-                        });
-                    }
-                }
-            } else {
-                // if (window.console && console) console.log(channel_evoked, "=>", action);
-            }
-        } else {
+        } else {
             this.setState({
                 messages: prepend(this.state.messages, event.data)
             });
