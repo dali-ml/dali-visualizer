@@ -62,25 +62,30 @@ var DropDown = React.createClass({
     },
     render: function () {
         var current_active = this.props.placeholder;
+        var current_active_url = '#';
+
         var options = this.props.options.map( function (op, i) {
             if (op.active) {
-                current_active = op.name;
+                current_active     = op.name;
+                current_active_url = '#' + op.value;
             }
             var cb = function (e) {
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
                 this.choose_dropdown_item(op);
             }.bind(this);
+            var op_url = '#' + op.value;
+            console.log(op_url);
             return (
                 <li key={"op_" + i} onClick={cb}>
-                    <a className={op.active ? "active" : ""}>{op.name}</a>
+                    <a href={op_url} className={op.active ? "active" : ""}>{op.name}</a>
                 </li>
             );
         }.bind(this));
         return (
             <li>
                 <a className="dropdown-button"
-                   href="#!"
+                   href={current_active_url}
                    onClick={this.dropdown_click}>
                     {current_active}<i className="mdi-navigation-arrow-drop-down right"></i>
                 </a>
@@ -402,8 +407,15 @@ var VisualizationServer = React.createClass({
 
             if (event.data.data.available_experiments.length > 0 &&
                     new_channel === null) {
-                new_channel  = event.data.data.available_experiments[0].uuid;
-                new_channel_name  = event.data.data.available_experiments[0].name;
+                var experiment_idx = 0;
+                var preferred_name = this.props.preferred_experiment;
+                event.data.data.available_experiments.forEach(function(exp, idx) {
+                    if (exp.uuid == preferred_name || exp.name == preferred_name) {
+                        experiment_idx = idx;
+                    }
+                });
+                new_channel  = event.data.data.available_experiments[experiment_idx].uuid;
+                new_channel_name  = event.data.data.available_experiments[experiment_idx].name;
                 new_messages = prepend(new_messages, NewChannel(new_channel_name));
             }
 
@@ -486,7 +498,10 @@ var VisualizationServer = React.createClass({
     }
 });
 
+var preferred_experiment = window.location.hash.slice(1);
 React.initializeTouchEvents(true);
+
 React.render(
-    <VisualizationServer url={"http://"+window.location.host+"/updates"} />, document.body
+    <VisualizationServer url={"http://"+window.location.host+"/updates"}
+                         preferred_experiment={preferred_experiment} />, document.body
 );
