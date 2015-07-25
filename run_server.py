@@ -36,7 +36,8 @@ if __name__ == "__main__":
         "http://darsain.github.io/tooltip/dist/tooltip.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js",
         react_url,
-        "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js"
+        "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js",
     ]
 
     css_libs = [

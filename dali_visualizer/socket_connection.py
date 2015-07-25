@@ -62,7 +62,7 @@ class Connection(SockJSConnection):
         self.clients.remove(self)
 
     @classmethod
-    def announance_new_experiments(cls, experiments):
+    def announce_new_experiments(cls, experiments):
         Connection.available_experiments = experiments
         for client in cls.clients:
             if client.authenticated:

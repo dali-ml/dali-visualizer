@@ -109,10 +109,7 @@ var DropDown = React.createClass({
 
             return (
                 <li key={"op_" + i} onClick={cb}>
-                    <a href={op_url} className={op.active ? "active" : ""}>
-                        {op.name}
-                        {time_since}
-                    </a>
+                    <a href={op_url} className={op.active ? "active" : ""}>{op.name}{time_since}</a>
                 </li>
             );
         }.bind(this));
@@ -121,8 +118,7 @@ var DropDown = React.createClass({
                 <a className="dropdown-button"
                    href={current_active_url}
                    onClick={this.dropdown_click}>
-                    {current_active}
-                    <i className="mdi-navigation-arrow-drop-down right"></i>
+                    {current_active}<i className="mdi-navigation-arrow-drop-down right"></i>
                 </a>
                 <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
                     {options}
