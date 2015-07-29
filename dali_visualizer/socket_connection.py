@@ -50,7 +50,11 @@ class Connection(SockJSConnection):
         # For every incoming message, broadcast it to all clients
         # self.broadcast(self.clients, msg)
         if len(msg) > 2:
-            json_msg = json.loads(msg)
+            try:
+                json_msg = json.loads(msg)
+            except Exception as e:
+                print ("Error parsing JSON from client: " + e)
+                return
             if "experiment_uuid" in json_msg:
                 # new participant to this channel:
                 self.experiment_uuid = json_msg["experiment_uuid"]
@@ -78,7 +82,7 @@ class Connection(SockJSConnection):
             data = json.loads(msg.body)
             data_type = data["type"]
         except Exception as e:
-            print('WARNING: exception json parsing incoming update: ', e)
+            print('WARNING: exception JSON parsing incoming update: ', e)
             return
 
         if data_type == 'heartbeat':
