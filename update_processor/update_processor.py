@@ -23,8 +23,7 @@ class UpdateProcessor(object):
                 name = experiment.get('name')
 
                 if name is not None:
-                    creation_ts_utc = experiment.get('created') \
-                            .replace(tzinfo=pytz.UTC).timestamp()
+                    creation_ts_utc = experiment.get('created').timestamp()
                     res.append({
                         'name' : name,
                         'created' : creation_ts_utc,

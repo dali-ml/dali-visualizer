@@ -38,6 +38,7 @@ if __name__ == "__main__":
         react_url,
         "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/0.3.4/sockjs.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.4.0/moment-timezone-with-data.min.js",
     ]
 
     css_libs = [
@@ -86,6 +87,7 @@ if __name__ == "__main__":
     redis = StrictRedis(args.redis_host, args.redis_port)
     initialize_up(redis)
     get_up().run_in_a_thread()
+
 
     server.start(
         port = args.port

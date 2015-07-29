@@ -11,11 +11,13 @@ import os
 from urllib.request import urlretrieve, HTTPError
 
 def download_and_check(fname, url):
+
     if os.path.exists(fname) and os.path.isfile(fname):
         return True
     else:
         try:
             urlretrieve(url, fname)
+
             assert(os.path.exists(fname) and os.path.isfile(fname)), "Could not download file \"%s\" from \"%s\"" % (fname, url)
             return True
         except HTTPError:
@@ -57,6 +59,7 @@ def check_and_download(url, directory):
         os.makedirs(directory, exist_ok=True)
     if directory is not None and os.path.exists(directory) and os.path.isdir(directory):
         status = download_and_check(os.path.join(directory, destfilename), url)
+
         if not status:
             return status
     return status

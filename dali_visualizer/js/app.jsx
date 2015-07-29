@@ -22,7 +22,7 @@ var TimeSince = React.createClass({
         }
     },
     tick: function() {
-        var desc = moment(this.props.since).fromNow();
+        var desc = moment.tz(this.props.since, "Europe/London").fromNow();
         this.setState({
             time: " (" + desc + ")"
         });
@@ -480,8 +480,10 @@ var VisualizationServer = React.createClass({
     render: function () {
         var current_channel = this.state.channel;
         var options = this.state.available_channels.map( function (experiment, k) {
+            console.log(experiment.created);
             var offset = new Date().getTimezoneOffset() * 60000;
-            var created_local_tz = new Date(parseInt(experiment.created * 1000) + offset);
+            var created_local_tz = new Date(parseInt(experiment.created * 1000));
+            console.log(created_local_tz);
             return {
                 name:  experiment.name,
                 value: experiment.uuid,
