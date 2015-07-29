@@ -34,7 +34,7 @@ var TimeSince = React.createClass({
         clearInterval(this.interval);
     },
     render: function() {
-        return <span>{this.state.time}</span>
+        return <span className="time-since">{this.state.time}</span>
     }
 });
 
@@ -103,13 +103,13 @@ var DropDown = React.createClass({
             var time_since = "";
             if (op.time_since !== undefined) {
                 time_since = (
-                    <TimeSince since={op.time_since} />
+                    <span><br /><TimeSince since={op.time_since} /></span>
                 );
             }
 
             return (
                 <li key={"op_" + i} onClick={cb}>
-                    <a href={op_url} className={op.active ? "active" : ""}>{op.name}{time_since}</a>
+                    <a className="experiment" href={op_url} className={op.active ? "active" : ""}>{op.name}{time_since}</a>
                 </li>
             );
         }.bind(this));
@@ -120,7 +120,7 @@ var DropDown = React.createClass({
                    onClick={this.dropdown_click}>
                     {current_active}<i className="mdi-navigation-arrow-drop-down right"></i>
                 </a>
-                <ul className={"dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
+                <ul className={"experiment dropdown-inner" + (this.state.active ? " active" : "")} ref="dropdown">
                     {options}
                 </ul>
             </li>
