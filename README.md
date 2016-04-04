@@ -105,7 +105,7 @@ Forward the ports:
 #### Named Entity Recognition
 
 ![NER visual](readme_images/dali_visualizer_ner.alpha.png)
-<small>an [LSTM predicting Named Entities](https://github.com/JonathanRaiman/Dali/blob/master/examples/sparse_ner.cpp) in text</small>
+<small>an [LSTM predicting Named Entities](https://github.com/JonathanRaiman/dali-examples/blob/master/examples/sparse_ner.cpp) in text</small>
 
 ```cpp
 visualizer->throttled_feed(seconds(5), [&word_vocab, &label_vocab, &minibatch, &model]() {
