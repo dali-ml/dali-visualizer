@@ -3,13 +3,13 @@ Dali Visualizer
 
 ![Babi visual](readme_images/dali_visualizer_babi.alpha.png)
 
-Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/JonathanRaiman/recurrentjs). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
+Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/dali-ml/Dali). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
 
 ### Dependencies
 
 * [Python 3](https://www.python.org/download/releases/3.0/)
 * [Redis](http://redis.io)
-* [Dali](http://github.com/JonathanRaiman/recurrentjs)
+* [Dali](http://github.com/dali-ml/Dali)
 
 ### Installation
 
@@ -105,7 +105,7 @@ Forward the ports:
 #### Named Entity Recognition
 
 ![NER visual](readme_images/dali_visualizer_ner.alpha.png)
-<small>an [LSTM predicting Named Entities](https://github.com/JonathanRaiman/dali-examples/blob/master/examples/sparse_ner.cpp) in text</small>
+<small>an [LSTM predicting Named Entities](https://github.com/dali-ml/dali-examples/blob/master/examples/sparse_ner.cpp) in text</small>
 
 ```cpp
 visualizer->throttled_feed(seconds(5), [&word_vocab, &label_vocab, &minibatch, &model]() {
@@ -127,6 +127,3 @@ visualizer->throttled_feed(seconds(5), [&word_vocab, &label_vocab, &minibatch, &
 });
 ```
 
-#### Sentiment Analysis
-
-*Description Coming Soon*
