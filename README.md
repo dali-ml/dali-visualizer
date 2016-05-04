@@ -3,7 +3,7 @@ Dali Visualizer
 
 ![Babi visual](readme_images/dali_visualizer_babi.alpha.png)
 
-Provides a visualization web frontend for the [Dali automatic differentation library](http://github.com/dali-ml/Dali). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
+Provides a visualization web frontend for the [Dali automatic differentiation library](http://github.com/dali-ml/Dali). Allows you to see a model optimize in real time, see the predictions, and collect your results into one window.
 
 ### Dependencies
 
